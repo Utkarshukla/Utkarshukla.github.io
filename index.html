@@ -46,6 +46,344 @@
             justify-content: center !important;
             align-items: center !important;
         }
+        
+        /* Toast Notification Styles */
+        #toast-container {
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            z-index: 999999 !important;
+            display: flex !important;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            max-width: 400px;
+        }
+        
+        #toast-container .toast {
+            pointer-events: auto;
+        }
+        
+        .toast {
+            background: #212428;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            min-width: 300px;
+            max-width: 90vw;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            position: relative;
+            z-index: 99999 !important;
+        }
+        
+        .toast.success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .toast.error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .toast.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .toast-message {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .toast-close:hover {
+            opacity: 1;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .toast.hiding {
+            animation: slideOutRight 0.3s ease-out forwards;
+        }
+        
+        /* Mobile Menu Fixes */
+        .popup-mobile-menu.menu-open {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .popup-mobile-menu.menu-open .inner {
+            opacity: 1 !important;
+            left: 0 !important;
+        }
+        
+        .hamberger-menu {
+            cursor: pointer;
+            z-index: 1000;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        .hamberger-menu i {
+            font-size: 24px;
+            color: #1b1b18;
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        /* Ensure hamburger is visible on mobile */
+        @media only screen and (max-width: 1199px) {
+            .hamberger-menu {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .hamberger-menu i {
+                display: block !important;
+                visibility: visible !important;
+                color: #1b1b18 !important;
+            }
+        }
+        
+        /* Hide on desktop */
+        @media only screen and (min-width: 1200px) {
+            .hamberger-menu {
+                display: none !important;
+            }
+        }
+        
+        .close-menu {
+            display: none;
+        }
+        
+        .popup-mobile-menu.menu-open ~ .close-menu,
+        .popup-mobile-menu.menu-open + * .close-menu {
+            display: block;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media only screen and (max-width: 768px) {
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+            }
+            
+            .toast {
+                min-width: auto;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .backto-top > div {
+                width: 45px;
+                height: 45px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            /* Ensure mobile menu button is visible */
+            .hamberger-menu {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            .header-right {
+                display: flex !important;
+                align-items: center !important;
+            }
+            
+            .header-right .hamberger-menu {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            
+            /* Fix mobile menu positioning */
+            .popup-mobile-menu {
+                z-index: 99999 !important;
+            }
+        }
+        
+        /* Ensure hamburger is visible on tablets too */
+        @media only screen and (max-width: 1199px) {
+            .hamberger-menu {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+        }
+        
+        @media only screen and (max-width: 768px) {
+            /* Header adjustments */
+            .header-wrapper {
+                padding: 10px 15px;
+            }
+            
+            .logo img {
+                width: 50px !important;
+            }
+            
+            /* Navigation */
+            .primary-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            /* Hero section */
+            .rn-slider-area .slide {
+                padding: 40px 0;
+            }
+            
+            .rn-slider-area h1.title {
+                font-size: 2rem !important;
+                line-height: 1.3;
+            }
+            
+            /* Features/What I Do section */
+            .rn-service-area {
+                padding: 60px 0;
+            }
+            
+            .rn-service {
+                margin-bottom: 30px;
+            }
+            
+            .section-title {
+                text-align: center !important;
+                margin-bottom: 40px;
+            }
+            
+            .section-title h2.title {
+                font-size: 1.8rem;
+            }
+            
+            /* Portfolio grid */
+            .rn-portfolio {
+                margin-bottom: 30px;
+            }
+            
+            /* Resume section */
+            .rn-resume-area {
+                padding: 60px 0;
+            }
+            
+            .rn-nav-list {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .rn-nav-list .nav-item {
+                flex: 1 1 auto;
+                min-width: 120px;
+            }
+            
+            /* Contact section */
+            .rn-contact-area {
+                padding: 60px 0;
+            }
+            
+            /* Footer */
+            .rn-footer-area {
+                padding: 40px 0;
+            }
+            
+            /* Modal adjustments */
+            .modal-dialog {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+            
+            /* Text adjustments */
+            p.description {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+            
+            /* Button adjustments */
+            .rn-btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media only screen and (max-width: 480px) {
+            .rn-slider-area h1.title {
+                font-size: 1.5rem !important;
+            }
+            
+            .section-title h2.title {
+                font-size: 1.5rem;
+            }
+            
+            .rn-service .content h4.title {
+                font-size: 1.1rem;
+            }
+            
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -97,10 +435,14 @@
                         <!-- End Mainmanu Nav -->
                     </nav>
                     <!-- Start Header Right  -->
-                    <div class="header-right">
+                    <div class="header-right" style="display: flex !important; align-items: center !important; gap: 15px !important;">
                         <a class="rn-btn" href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><span>Resume</span></a>
-                        <div class="hamberger-menu d-block d-xl-none">
-                            <i id="menuBtn" class="feather-menu humberger-menu"></i>
+                        <div class="hamberger-menu d-block d-xl-none" style="display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; z-index: 1000 !important; margin-left: 15px !important; min-width: 28px !important; min-height: 28px !important;">
+                            <i id="menuBtn" class="feather-menu humberger-menu" style="display: block !important; visibility: visible !important; color: #1b1b18 !important; font-size: 28px !important; cursor: pointer !important; width: 28px !important; height: 28px !important; line-height: 28px !important;">
+                                ☰
+                            </i>
+                            <!-- Fallback if feather icon doesn't load -->
+                            <span id="menuBtnFallback" style="display: none; font-size: 28px; color: #1b1b18; cursor: pointer; font-weight: bold; line-height: 28px;">☰</span>
                         </div>
                         <div class="close-menu d-block">
                             <span class="closeTrigger">
@@ -127,7 +469,7 @@
             <div class="menu-top">
                 <div class="menu-header">
                     <a class="logo" href="index.html">
-                        <img src="assets/images/logo/logos-circle.png" alt="Personal Portfolio">
+                        <img src="assets/img/utslogo.jpg" style="width: 80px; border-radius: 50%;" alt="Utkarsh Shukla">
                     </a>
                     <div class="close-button">
                         <button class="close-menu-activation close"><svg xmlns="http://www.w3.org/2000/svg" width="24"
@@ -144,7 +486,7 @@
                 <ul class="primary-menu nav nav-pills onepagenav">
                     <li class="nav-item current"><a class="nav-link smoth-animation active" href="#home">Home</a></li>
                     <li class="nav-item"><a class="nav-link smoth-animation" href="#features">Features</a></li>
-                    <li class="nav-item"><a class="nav-link smoth-animation" href="#portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link smoth-animation" href="#portfolio">Projects</a></li>
                     <li class="nav-item"><a class="nav-link smoth-animation" href="#clients">Clients</a></li>
                     <li class="nav-item"><a class="nav-link smoth-animation" href="#calendar">Github</a></li>
                     <li class="nav-item"><a class="nav-link smoth-animation" href="#blog">blog</a></li>
@@ -155,21 +497,24 @@
                 <div class="social-share-style-1 mt--40">
                     <span class="title">find with me</span>
                     <ul class="social-share d-flex liststyle">
-                        <li class="facebook"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        <li class="facebook"><a href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook">
-                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+                                    <path d="M4 1v22h16V7.5L14.5 1H4z" />
+                                    <polyline points="14 1 14 7 20 7" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <polyline points="10 9 9 9 8 9" />
                                 </svg></a>
                         </li>
-                        <li class="instagram"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        <li class="instagram"><a href="https://github.com/Utkarshukla"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-instagram">
-                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                    stroke-linecap="round" stroke-linejoin="round" class="feather feather-github">
+                                    <path
+                                        d="M0 0v24h24V0H0zm12 2C6.477 2 2 6.477 2 12c0 4.419 2.865 8.17 6.839 9.488.5.094.683-.217.683-.48 0-.237-.008-.866-.012-1.7-2.782.605-3.37-1.338-3.37-1.338-.454-1.15-1.107-1.457-1.107-1.457-.906-.617.068-.604.068-.604 1.004.07 1.53 1.03 1.53 1.03.892 1.526 2.34 1.086 2.91.83.092-.644.35-1.085.637-1.334-2.23-.254-4.572-1.115-4.572-4.95 0-1.093.39-1.987 1.032-2.684-.104-.253-.448-1.27.098-2.647 0 0 .84-.268 2.75 1.025a9.56 9.56 0 0 1 2.492-.336c.846.006 1.7.114 2.492.336 1.908-1.293 2.746-1.025 2.746-1.025.548 1.377.204 2.394.1 2.647.642.697 1.03 1.59 1.03 2.684 0 3.844-2.348 4.692-4.584 4.936.36.31.678.922.678 1.854 0 1.338-.012 2.416-.012 2.744 0 .267.18.578.688.48C19.138 20.17 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
                                 </svg></a>
                         </li>
-                        <li class="linkedin"><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        <li class="linkedin"><a href="https://www.linkedin.com/in/utkarsh-shukla-33a077218/"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin">
                                     <path
@@ -276,6 +621,7 @@
                                                 <li><img src="assets/img/php.png" alt="Icons Images"></li>
                                                 <li><img src="assets/img/Laravelpng.png" alt="Icons Images"></li>
                                                 <li><img src="assets/img/WordPress.png" alt="Icons Images"></li>
+                                                <!-- <li style="background: linear-gradient(135deg, #6db33f 0%, #4a7c59 100%); color: white; padding: 8px 12px; border-radius: 4px; font-weight: 600; font-size: 11px; display: flex; align-items: center; justify-content: center;">Spring Boot</li> -->
                                             </ul>
                                         </div>
                                     </div>
@@ -325,9 +671,8 @@
                                     </svg>
                                 </div>
                                 <div class="content">
-                                    <h4 class="title"><a href="#">Hosting Expertise</a></h4>
-                                    <p class="description">With my hosting expertise, I ensure websites are hosted on
-                                        reliable platforms, guaranteeing maximum uptime and performance.</p>
+                                    <h4 class="title"><a href="#">Backend Development</a></h4>
+                                    <p class="description">I specialize in Laravel framework development, building robust REST APIs, implementing JWT authentication, and optimizing database queries for high-performance applications.</p>
                                     <a class="read-more-button" href="#"><i class="feather-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -349,10 +694,8 @@
                                     </svg>
                                 </div>
                                 <div class="content">
-                                    <h4 class="title"><a href="#">Customization</a></h4>
-                                    <p class="description"> I specialize in developing custom plugins and existing
-                                        template or theme tailored to the unique needs and requirements of each project.
-                                    </p>
+                                    <h4 class="title"><a href="#">WordPress Development</a></h4>
+                                    <p class="description">I develop custom WordPress themes and plugins, create dynamic e-commerce solutions with WooCommerce, and build custom functionality tailored to client requirements.</p>
                                     <a class="read-more-button" href="#"><i class="feather-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -374,10 +717,8 @@
                                     </svg>
                                 </div>
                                 <div class="content">
-                                    <h4 class="title"><a href="#">CMS Website</a></h4>
-                                    <p class="description">I have expertise in various industries to effectively oversee
-                                        website content. My approach involves not only managing content but also
-                                        ensuring it adheres to modern standards, making it easily comprehensible.</p>
+                                    <h4 class="title"><a href="#">E-Commerce Solutions</a></h4>
+                                    <p class="description">I build fully functional e-commerce platforms with payment gateway integration (Stripe, PayPal), inventory management, order processing, and Google Shopping listings for maximum visibility.</p>
                                     <a class="read-more-button" href="#"><i class="feather-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -399,10 +740,8 @@
                                     </svg>
                                 </div>
                                 <div class="content">
-                                    <h4 class="title"><a href="#">Laravel REST API</a></h4>
-                                    <p class="description">I have expertise in developing web applications, creating
-                                        APIs and optimizing database queries for enhanced performance.
-                                    </p>
+                                    <h4 class="title"><a href="#">API Development</a></h4>
+                                    <p class="description">I design and develop secure RESTful APIs with JWT authentication, implement rate limiting, handle file uploads with media management, and ensure API documentation for seamless integration.</p>
                                     <a class="read-more-button" href="#"><i class="feather-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -426,9 +765,8 @@
                                     </svg>
                                 </div>
                                 <div class="content">
-                                    <h4 class="title"><a href="#">SEO Optimization</a></h4>
-                                    <p class="description">I care about client product and help to optimize google
-                                        search result and handle listing of product on Google, Ads etc.</p>
+                                    <h4 class="title"><a href="#">Database Design & Optimization</a></h4>
+                                    <p class="description">I design efficient MySQL database schemas, implement Eloquent ORM relationships, optimize queries with eager loading, and create migration strategies for scalable applications.</p>
                                     <a class="read-more-button" href="#"><i class="feather-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -467,10 +805,8 @@
                                     </svg>
                                 </div>
                                 <div class="content">
-                                    <h4 class="title"><a href="#">Shape your Ideas</a></h4>
-                                    <p class="description">
-                                        I have experience collaborating with design experts to understand client needs
-                                        and refine their ideas for optimal outcomes.</p>
+                                    <h4 class="title"><a href="#">Spring Boot Microservices</a></h4>
+                                    <p class="description">I architect and develop scalable microservices using Spring Boot, implementing service discovery, API gateways, distributed systems, and containerization with Docker for enterprise-level applications.</p>
                                     <a class="read-more-button" href="#"><i class="feather-arrow-right"></i></a>
                                 </div>
                             </div>
@@ -789,50 +1125,50 @@
                                         <!-- Start Skill List Area 2nd  -->
                                         <div class="col-lg-6 col-md-12 col-12 mt_md--60 mt_sm--60">
                                             <div class="content">
-                                                <span class="subtitle">2023 - 2010</span>
+                                                <span class="subtitle">2023 - Present</span>
                                                 <h4 class="maintitle">Job Experience</h4>
                                                 <div class="experience-list">
 
                                                     <!-- Start Single List  -->
-                                                    <div class="resume-single-list">
+                                                    <div class="resume-single-list" style="color: black; transition: color 0.3s; cursor: pointer;"
+                                                         onmouseover="this.style.color='white'; this.style.backgroundColor='#222';"
+                                                         onmouseout="this.style.color='black'; this.style.backgroundColor='';">
                                                         <div class="inner">
                                                             <div class="heading">
                                                                 <div class="title">
-                                                                    <h4>PHP Developer</h4>
-                                                                    <span>Phantasm Digital Works (July 2023 -
+                                                                    <h4 style="color: inherit; transition: color 0.3s;">Backend Team Lead</h4>
+                                                                    <span style="color: inherit; transition: color 0.3s;">Phantasm Solutions Pvt. Ltd. (July 2023 -
                                                                         Present)</span>
                                                                 </div>
                                                                 <div class="date-of-time">
-                                                                    <span>10/10</span>
+                                                                    <span style="color: inherit; transition: color 0.3s;">10/10</span>
                                                                 </div>
                                                             </div>
-                                                            <p class="description">
-                                                            <ul>
-                                                                <li class="description">Develop and maintain WordPress
-                                                                    and Laravel websites with a
-                                                                    focus on SEO optimization and responsive design.
-                                                                </li>
-                                                                <li class="description">Manage Google listings, hosting,
-                                                                    and Elementor proficiency for
-                                                                    enhanced website functionality.</li>
-                                                                <li class="description">Specialize in e-commerce
-                                                                    development & diverse website types,
-                                                                    collaborating closely with clients to meet their
-                                                                    specific needs.</li>
-                                                                <li class="description">Create custom plugins & posts
-                                                                    tailored to client needs,
-                                                                    enhancing website functionality & meeting specific
-                                                                    requirements.</li>
-                                                                <li class="description">Specialize in e-commerce and
-                                                                    diverse website development,
-                                                                    working closely with clients to meet their unique
-                                                                    needs through
-                                                                    documentation exploration and AI assistance.</li>
-                                                            </ul>
-
-
-
-                                                            </p>
+                                                            <div class="professional-experience" style="color: inherit; transition: color 0.3s;">
+                                                                  <ul style="color: inherit; transition: color 0.3s;">
+                                                                            Lead backend developer for scalable e-commerce systems with high-performance architecture, API integrations, and DevOps automation.
+                                                                        
+                                                                    <li class="description" style="color: inherit; transition: color 0.3s;">
+                                                                        <strong style="color: inherit;">ERP POS (Laravel | Full Stack):</strong> End-to-end delivery of ERP POS (Vendors, Purchases, Inventory, Fulfillment, Tax, Offers, RBAC, multi-site eCommerce APIs). Improved process efficiency by 30% and fulfillment time by 40%. Integrated third-party APIs (Twilio, NMI, Square, Authorize.net, ShipStation, Shiprocket, Woo REST).
+                                                                    </li>
+                                                                    <li class="description" style="color: inherit; transition: color 0.3s;">
+                                                                        <strong style="color: inherit;">Performance Optimization:</strong> Leveraged Eloquent relationships, indexing, Redis (AWS) caching, queueing, and S3 for scalable high-speed data processing.
+                                                                    </li>
+                                                                    <li class="description" style="color: inherit; transition: color 0.3s;">
+                                                                        <strong style="color: inherit;">LMS (MERN):</strong> Designed and built a secure video LMS (Node.js, Next.js, BunnyCDN) with REST APIs, schema design, secure content protection, and robust frontend integration (RTK Query).
+                                                                    </li>
+                                                                    <li class="description" style="color: inherit; transition: color 0.3s;">
+                                                                        <strong style="color: inherit;">Dropshipping Plugin:</strong> Engineered a WordPress–Laravel plugin with secure two-way API sync, inventory synchronization, and dynamic entity mapping for scalable B2B ecommerce.
+                                                                    </li>
+                                                                    <li class="description" style="color: inherit; transition: color 0.3s;">
+                                                                        <strong style="color: inherit;">E-Commerce (PHP | SOA):</strong> Integrated WooCommerce with ManageMore POS (Laravel 11 API). Achieved 70% faster sync, 60% scalability improvement, and 90% fewer oversell incidents via stock reservation.
+                                                                    </li>
+                                                                    <li class="description" style="color: inherit; transition: color 0.3s;">
+                                                                        <strong style="color: inherit;">Platform Integrations:</strong> Implemented Google OAuth, Facebook APIs, Firebase FCM, Socket.io, affiliate modules, chat, and robust real-time notifications. Hardened security using JWT, Passport, CORS, validation, and resource locking.
+                                                                    </li>
+                                                                   
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -1088,32 +1424,7 @@
                                         </div>
                                         <!-- End Skill List Area  -->
 
-                                        <!-- Start Skill List Area 2nd  -->
-                                        <!-- <div class="col-lg-6 col-md-12 col-12 mt_md--60 mt_sm--60">
-                                            <div class="content">
-                                                <span class="subtitle">2007 - 2010</span>
-                                                <h4 class="maintitle">Job Experience</h4>
-                                                <div class="experience-list"> -->
-
-                                        <!-- Start Single List  -->
-                                        <!-- <div class="resume-single-list">
-                                                        <div class="inner">
-                                                            <div class="heading">
-                                                                <div class="title">
-                                                                    <h4>Diploma in Web Development</h4>
-                                                                    <span>BSE In CSE (2004 - 2008)</span>
-                                                                </div>
-                                                                <div class="date-of-time">
-                                                                    <span>4.70/5</span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="description">Contrary to popular belief. Ut
-                                                                tincidunt est ac dolor aliquam sodales.
-                                                                Phasellus sed mauris hendrerit, laoreet sem in, lobortis
-                                                                mauris hendrerit ante.</p>
-                                                        </div>
-                                                    </div> -->
-                                        <!-- End Single List  -->
+                                        <!-- End Skill List Area 2nd  -->
 
 
                                     </div>
@@ -1153,123 +1464,12 @@
                                                     </div>
                                                     <!-- End Single List  -->
 
-                                                    <!-- Start Single List  -->
-                                                    <!-- <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="500"
-                                                        data-aos-once="true" class="resume-single-list aos-init aos-animate">
-                                                        <div class="inner">
-                                                            <div class="heading">
-                                                                <div class="title">
-                                                                    <h4> Examples Of Personal Portfolio</h4>
-                                                                    <span>College of Studies (2000 - 2002)</span>
-                                                                </div>
-                                                                <div class="date-of-time">
-                                                                    <span>4.50/5</span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="description">Maecenas finibus nec sem ut
-                                                                imperdiet. Ut tincidunt est ac dolor aliquam sodales.
-                                                                Phasellus sed mauris hendrerit, laoreet sem in, lobortis
-                                                                mauris hendrerit ante.</p>
-                                                        </div>
-                                                    </div> -->
-                                                    <!-- End Single List  -->
-
-                                                    <!-- Start Single List  -->
-                                                    <!-- <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="700"
-                                                        data-aos-once="true" class="resume-single-list aos-init aos-animate">
-                                                        <div class="inner">
-                                                            <div class="heading">
-                                                                <div class="title">
-                                                                    <h4>Tips For Personal Portfolio</h4>
-                                                                    <span>University of Studies (1997 - 2001)</span>
-                                                                </div>
-                                                                <div class="date-of-time">
-                                                                    <span>4.80/5</span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="description"> If you are going to use a passage.
-                                                                Ut tincidunt est ac dolor aliquam sodales.
-                                                                Phasellus sed mauris hendrerit, laoreet sem in, lobortis
-                                                                mauris hendrerit ante.</p>
-                                                        </div>
-                                                    </div> -->
-                                                    <!-- End Single List  -->
 
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- End Skill List Area  -->
 
-                                        <!-- Start Skill List Area 2nd  -->
-                                        <!-- <div class="col-lg-6 col-md-12 col-12 mt_md--60 mt_sm--60">
-                                            <div class="content">
-                                                <span class="subtitle">2007 - 2010</span>
-                                                <h4 class="maintitle">Job Experience</h4>
-                                                <div class="experience-list"> -->
-
-                                        <!-- Start Single List  -->
-                                        <!-- <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="500"
-                                                        data-aos-once="true" class="resume-single-list aos-init aos-animate">
-                                                        <div class="inner">
-                                                            <div class="heading">
-                                                                <div class="title">
-                                                                    <h4>Diploma in Web Development</h4>
-                                                                    <span>BSE In CSE (2004 - 2008)</span>
-                                                                </div>
-                                                                <div class="date-of-time">
-                                                                    <span>4.70/5</span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="description">Contrary to popular belief. Ut
-                                                                tincidunt est ac dolor aliquam sodales.
-                                                                Phasellus sed mauris hendrerit, laoreet sem in, lobortis
-                                                                mauris hendrerit ante.</p>
-                                                        </div>
-                                                    </div> -->
-                                        <!-- End Single List  -->
-
-                                        <!-- Start Single List  -->
-                                        <!-- <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="700"
-                                                        data-aos-once="true" class="resume-single-list aos-init aos-animate">
-                                                        <div class="inner">
-                                                            <div class="heading">
-                                                                <div class="title">
-                                                                    <h4>The Personal Portfolio Mystery</h4>
-                                                                    <span>Job at Rainbow-Themes (2008 - 2016)</span>
-                                                                </div>
-                                                                <div class="date-of-time">
-                                                                    <span>4.95/5</span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="description">Generate Lorem Ipsum which looks. Ut
-                                                                tincidunt est ac dolor aliquam sodales.
-                                                                Phasellus sed mauris hendrerit, laoreet sem in, lobortis
-                                                                mauris hendrerit ante.</p>
-                                                        </div>
-                                                    </div> -->
-                                        <!-- End Single List  -->
-
-                                        <!-- Start Single List  -->
-                                        <!-- <div data-aos="fade-up" data-aos-duration="500" data-aos-delay="900"
-                                                        data-aos-once="true" class="resume-single-list aos-init aos-animate">
-                                                        <div class="inner">
-                                                            <div class="heading">
-                                                                <div class="title">
-                                                                    <h4>Diploma in Computer Science</h4>
-                                                                    <span>Works at Plugin Development (2016 -
-                                                                        2020)</span>
-                                                                </div>
-                                                                <div class="date-of-time">
-                                                                    <span>5.00/5</span>
-                                                                </div>
-                                                            </div>
-                                                            <p class="description">Maecenas finibus nec sem ut
-                                                                imperdiet. Ut tincidunt est ac dolor aliquam sodales.
-                                                                Phasellus sed mauris hendrerit, laoreet sem in, lobortis
-                                                                mauris hendrerit ante.</p>
-                                                        </div>
-                                                    </div> -->
-                                        <!-- End Single List  -->
 
                                     </div>
                                 </div>
@@ -4758,7 +4958,7 @@
                             </div>
                         </div>
                         <!-- Back to  top Start -->
-                        <div class="backto-top" style="opacity: 0;">
+                        <div class="backto-top" id="backToTop" style="opacity: 0; cursor: pointer;">
                             <div style="display: flex;align-items: center; justify-content: center;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -5563,6 +5763,10 @@
                         <!-- End Modal Area  -->
 
     </main>
+    
+    <!-- Toast Notification Container - Must be outside main for proper z-index -->
+    <div id="toast-container" class="toast-container"></div>
+    
     <!-- Start Footer Area -->
     <div class="rn-footer-area rn-section-gap section-separator" style="padding-top: 10px;">
         <div class="container">
@@ -5620,6 +5824,199 @@
       document.addEventListener('contextmenu', function(event) {
             event.preventDefault();
         });
+      
+      // Scroll to Top Functionality
+      (function() {
+          const backToTopBtn = document.getElementById('backToTop');
+          
+          if (backToTopBtn) {
+              // Show/hide button on scroll
+              window.addEventListener('scroll', function() {
+                  if (window.pageYOffset > 100) {
+                      backToTopBtn.style.opacity = '1';
+                      backToTopBtn.style.pointerEvents = 'auto';
+                  } else {
+                      backToTopBtn.style.opacity = '0';
+                      backToTopBtn.style.pointerEvents = 'none';
+                  }
+              });
+              
+              // Scroll to top on click
+              backToTopBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                  });
+              });
+          }
+      })();
+      
+      // Toast Notification System
+      function showToast(message, type = 'info', title = '') {
+          const container = document.getElementById('toast-container');
+          if (!container) {
+              console.error('Toast container not found!');
+              return;
+          }
+          
+          // Ensure container is visible
+          container.style.display = 'flex';
+          container.style.visibility = 'visible';
+          
+          const toast = document.createElement('div');
+          toast.className = `toast ${type}`;
+          toast.style.display = 'flex';
+          toast.style.visibility = 'visible';
+          
+          const icons = {
+              success: '✓',
+              error: '✕',
+              info: 'ℹ'
+          };
+          
+          toast.innerHTML = `
+              <span class="toast-icon">${icons[type] || icons.info}</span>
+              <div class="toast-content">
+                  ${title ? `<div class="toast-title">${title}</div>` : ''}
+                  <div class="toast-message">${message}</div>
+              </div>
+              <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+          `;
+          
+          container.appendChild(toast);
+          
+          // Force reflow to ensure animation
+          toast.offsetHeight;
+          
+          // Auto remove after 5 seconds
+          setTimeout(() => {
+              toast.classList.add('hiding');
+              setTimeout(() => {
+                  if (toast.parentElement) {
+                      toast.remove();
+                  }
+              }, 300);
+          }, 5000);
+      }
+      
+      // Make showToast available globally
+      window.showToast = showToast;
+      
+      // Mobile Menu and Toast initialization
+      document.addEventListener('DOMContentLoaded', function() {
+          // Ensure hamburger menu is visible
+          const hambergerMenu = document.querySelector('.hamberger-menu');
+          const menuBtn = document.getElementById('menuBtn');
+          const menuBtnFallback = document.getElementById('menuBtnFallback');
+          
+          if (hambergerMenu) {
+              hambergerMenu.style.display = 'block';
+              hambergerMenu.style.visibility = 'visible';
+              hambergerMenu.style.opacity = '1';
+          }
+          
+          // Check if feather icon loaded, show fallback if not
+          setTimeout(function() {
+              if (menuBtn && (window.getComputedStyle(menuBtn).display === 'none' || !menuBtn.offsetWidth)) {
+                  if (menuBtnFallback) {
+                      menuBtnFallback.style.display = 'block';
+                      menuBtnFallback.addEventListener('click', function(e) {
+                          e.preventDefault();
+                          const mobileMenu = document.querySelector('.popup-mobile-menu');
+                          if (mobileMenu) {
+                              mobileMenu.classList.add('menu-open');
+                              document.body.style.overflow = 'hidden';
+                          }
+                      });
+                  }
+              }
+          }, 500);
+          
+          // Mobile Menu Fix - Ensure it works even if jQuery isn't ready
+          const mobileMenu = document.querySelector('.popup-mobile-menu');
+          const closeBtn = document.querySelector('.close-menu-activation');
+          const closeTrigger = document.querySelector('.closeTrigger');
+          
+          // Open menu
+          if (menuBtn) {
+              menuBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (mobileMenu) {
+                      mobileMenu.classList.add('menu-open');
+                      document.body.style.overflow = 'hidden';
+                  }
+              });
+          }
+          
+          // Also add click handler to parent div
+          if (hambergerMenu) {
+              hambergerMenu.addEventListener('click', function(e) {
+                  if (e.target === hambergerMenu || e.target === menuBtn || e.target.closest('#menuBtn')) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (mobileMenu) {
+                          mobileMenu.classList.add('menu-open');
+                          document.body.style.overflow = 'hidden';
+                      }
+                  }
+              });
+          }
+          
+          // Close menu handlers
+          if (closeBtn) {
+              closeBtn.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  if (mobileMenu) {
+                      mobileMenu.classList.remove('menu-open');
+                      document.body.style.overflow = '';
+                  }
+              });
+          }
+          
+          if (closeTrigger) {
+              closeTrigger.addEventListener('click', function(e) {
+                  e.preventDefault();
+                  if (mobileMenu) {
+                      mobileMenu.classList.remove('menu-open');
+                      document.body.style.overflow = '';
+                  }
+              });
+          }
+          
+          // Close menu when clicking on menu links
+          const menuLinks = document.querySelectorAll('.popup-mobile-menu .primary-menu .nav-item a');
+          menuLinks.forEach(function(link) {
+              link.addEventListener('click', function() {
+                  if (mobileMenu) {
+                      mobileMenu.classList.remove('menu-open');
+                      document.body.style.overflow = '';
+                  }
+              });
+          });
+          
+          // Close menu when clicking outside
+          if (mobileMenu) {
+              mobileMenu.addEventListener('click', function(e) {
+                  if (e.target === mobileMenu) {
+                      mobileMenu.classList.remove('menu-open');
+                      document.body.style.overflow = '';
+                  }
+              });
+          }
+          
+          // Test toast on page load
+          if (window.innerWidth <= 768) {
+              setTimeout(() => {
+                  showToast('Portfolio loaded successfully!', 'success', 'Welcome');
+              }, 500);
+          } else {
+              setTimeout(() => {
+                  showToast('Toast notifications are working!', 'info', 'Test');
+              }, 1000);
+          }
+      });
 </script>
 
 </html>
