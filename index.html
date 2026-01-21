@@ -521,15 +521,58 @@
             box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
         }
 
-        /* Theme transition animation */
+        /* Theme transition animation - exclude interactive elements */
         body,
-        body *,
-        body *::before,
-        body *::after {
+        body>*,
+        body .main-page-wrapper,
+        body .main-page-wrapper>*,
+        body .rn-service,
+        body .rn-portfolio,
+        body .rn-blog,
+        body .social-share li a,
+        body .skill-share li,
+        body .rn-nav-list,
+        body .resume-single-list,
+        body .contact-about-area,
+        body .contact-form-wrapper,
+        body .client-card .inner,
+        body .testimonial .inner,
+        body .rn-header,
+        body .rn-footer-area,
+        body .slide .thumbnail::before,
+        body .backto-top>div {
             transition: background-color 0.3s ease,
                 box-shadow 0.3s ease,
-                color 0.15s ease,
                 border-color 0.3s ease;
+        }
+
+        /* Text color transitions */
+        body h1,
+        body h2,
+        body h3,
+        body h4,
+        body h5,
+        body h6,
+        body p,
+        body span,
+        body a,
+        body li {
+            transition: color 0.2s ease;
+        }
+
+        /* Exclude theme toggle from slow transitions - make it snappy */
+        .theme-toggle-wrapper,
+        .theme-toggle-btn,
+        .theme-toggle-btn * {
+            transition: none !important;
+        }
+
+        .theme-toggle-btn svg {
+            transition: transform 0.2s ease, opacity 0.2s ease !important;
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
         }
 
         /* Disable transition on page load */
@@ -6791,23 +6834,47 @@
             });
         }
 
-        // Setup click handler
+        // Setup click handler with debounce
         function setupThemeToggle() {
             const toggleBtn = document.getElementById('themeToggle');
             const toggleBtnMobile = document.getElementById('themeToggleMobile');
 
+            // Debounce flag to prevent rapid clicking
+            let isThrottled = false;
+            const throttleDelay = 300; // ms
+
+            function handleThemeToggle(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Prevent rapid clicks
+                if (isThrottled) return;
+                isThrottled = true;
+
+                // Cycle theme immediately
+                cycleTheme();
+
+                // Reset throttle after delay
+                setTimeout(() => {
+                    isThrottled = false;
+                }, throttleDelay);
+            }
+
             if (toggleBtn) {
-                toggleBtn.addEventListener('click', function (e) {
+                toggleBtn.addEventListener('click', handleThemeToggle);
+                // Also handle touch for mobile
+                toggleBtn.addEventListener('touchend', function (e) {
                     e.preventDefault();
-                    cycleTheme();
-                });
+                    handleThemeToggle(e);
+                }, { passive: false });
             }
 
             if (toggleBtnMobile) {
-                toggleBtnMobile.addEventListener('click', function (e) {
+                toggleBtnMobile.addEventListener('click', handleThemeToggle);
+                toggleBtnMobile.addEventListener('touchend', function (e) {
                     e.preventDefault();
-                    cycleTheme();
-                });
+                    handleThemeToggle(e);
+                }, { passive: false });
             }
         }
 
