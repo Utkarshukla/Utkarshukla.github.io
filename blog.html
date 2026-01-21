@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Blog | Utkarsh Shukla - Software Developer</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://utkarshukla.github.io/assets/img/utslogo.jpg">
+
+    <meta name="robots" content="index, follow">
+    <meta name="description"
+        content="Technical blog posts about backend development, database optimization, and software architecture by Utkarsh Shukla.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords"
+        content="Backend Development, Database Optimization, Laravel, PHP, Race Conditions, Software Architecture">
+    <meta name="author" content="Utkarsh Shukla">
+
+    <meta property="og:title" content="Blog | Utkarsh Shukla">
+    <meta property="og:description" content="Technical blog posts about backend development and software architecture.">
+    <meta property="og:image" content="https://utkarshukla.github.io/assets/img/utslogo.jpg">
+    <meta property="og:url" content="https://utkarshukla.github.io/blog.html">
+    <meta property="og:type" content="website">
+
+    <link rel="canonical" href="https://utkarshukla.github.io/blog.html">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/vendor/aos.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        /* ===========================================
+           BLOG PAGE STYLES
+        =========================================== */
+
+        /* Dark Theme Variables */
+        :root {
+            --theme-transition: 0.3s ease;
+        }
+
+        body.dark-version {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .main-page-wrapper,
+        body.dark-version header.rn-header,
+        body.dark-version .rn-footer-area {
+            background-color: #212428 !important;
+        }
+
+        /* Blog Hero Section */
+        .blog-hero {
+            padding: 150px 0 80px;
+            text-align: center;
+        }
+
+        .blog-hero .subtitle {
+            color: #ff014f;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .blog-hero .title {
+            font-size: 60px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .blog-hero .description {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 40px;
+            padding: 60px 0 100px;
+        }
+
+        @media (max-width: 768px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .blog-hero .title {
+                font-size: 36px;
+            }
+        }
+
+        /* Blog Card */
+        .blog-card {
+            background: linear-gradient(145deg, #e2e8ec, #ffffff);
+            box-shadow: 5px 5px 15px #D1D9E6, -5px -5px 15px #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .blog-card .thumbnail {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .blog-card .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .blog-card:hover .thumbnail img {
+            transform: scale(1.1);
+        }
+
+        .blog-card .thumbnail .category {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .blog-card .content {
+            padding: 30px;
+        }
+
+        .blog-card .meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        .blog-card .meta .date {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .blog-card .meta .read-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .blog-card .title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .blog-card .title a {
+            color: #1e2125;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .blog-card .title a:hover {
+            color: #ff014f;
+        }
+
+        .blog-card .excerpt {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #3c3e41;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .blog-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .blog-card .tag {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Dark Theme Blog Card */
+        body.dark-version .blog-card {
+            background: linear-gradient(145deg, #1e2024, #23272b);
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+        }
+
+        body.dark-version .blog-card .title a {
+            color: #ffffff;
+        }
+
+        body.dark-version .blog-card .excerpt {
+            color: #878e99;
+        }
+
+        body.dark-version .blog-card .meta {
+            color: #878e99;
+        }
+
+        body.dark-version .blog-hero .title {
+            color: #ffffff;
+        }
+
+        body.dark-version .blog-hero .description {
+            color: #878e99;
+        }
+
+        /* Loading State */
+        .blog-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .blog-loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 1, 79, 0.2);
+            border-top-color: #ff014f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* No Posts Message */
+        .no-posts {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .no-posts h3 {
+            margin-bottom: 15px;
+        }
+
+        /* Theme Toggle Styles */
+        .theme-toggle-wrapper {
+            position: relative;
+            z-index: 100;
+        }
+
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e2e8ec, #ffffff);
+            box-shadow: 5px 5px 15px #D1D9E6, -5px -5px 15px #ffffff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .theme-toggle-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover::before {
+            opacity: 1;
+        }
+
+        .theme-toggle-btn svg {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .theme-toggle-btn .sun-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .moon-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .system-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover svg {
+            color: #ffffff;
+        }
+
+        body.dark-version .theme-toggle-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b);
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+        }
+
+        body.dark-version .theme-toggle-btn .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+        }
+
+        body.dark-version .theme-toggle-btn .moon-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .sun-icon,
+        body[data-theme="system"] .theme-toggle-btn .moon-icon {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .system-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Header Styles */
+        body.dark-version .rn-header {
+            background-color: transparent !important;
+        }
+
+        body.dark-version .rn-header.sticky {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .mainmenu-nav .primary-menu li a,
+        body.dark-version #sideNav .primary-menu li a {
+            color: #ffffff !important;
+        }
+
+        body.dark-version .rn-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b) !important;
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e !important;
+        }
+
+        body.dark-version .rn-btn span {
+            color: #ff014f !important;
+        }
+
+        /* Back Button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff014f;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 30px;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+        }
+
+        .back-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+
+<body class="template-color-1 spybody white-version" data-spy="scroll" data-offset="150">
+
+    <!-- Start Header -->
+    <header class="rn-header haeder-default black-logo-version header--fixed header--sticky">
+        <div class="header-wrapper rn-popup-mobile-menu m--0 row align-items-center">
+            <div class="col-lg-2 col-6">
+                <div class="header-left">
+                    <div class="logo">
+                        <a href="index.html" style="display: flex; align-items: center;">
+                            <img src="assets/img/utslogo.jpg" style="width: 60px; border-radius: 50%;"
+                                alt="Utkarsh Shukla">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-6">
+                <div class="header-center">
+                    <nav id="sideNav" class="mainmenu-nav navbar-example2 d-none d-xl-block">
+                        <ul class="primary-menu nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.html#features">Features</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.html#portfolio">Projects</a></li>
+                            <li class="nav-item current"><a class="nav-link" href="blog.html">Blog</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.html#contacts">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="header-right"
+                        style="display: flex !important; align-items: center !important; gap: 15px !important;">
+                        <a class="rn-btn"
+                            href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><span>Resume</span></a>
+                        <!-- Theme Toggle Button -->
+                        <div class="theme-toggle-wrapper" id="themeToggle" title="Toggle theme">
+                            <button class="theme-toggle-btn" aria-label="Toggle theme">
+                                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End Header Area -->
+
+    <main class="main-page-wrapper">
+        <div class="container">
+            <!-- Blog Hero Section -->
+            <div class="blog-hero" data-aos="fade-up">
+                <span class="subtitle">Technical Insights</span>
+                <h1 class="title">Blog</h1>
+                <p class="description">Deep dives into backend development, database optimization, and software
+                    architecture best practices.</p>
+            </div>
+
+            <!-- Blog Grid -->
+            <div id="blogGrid" class="blog-grid">
+                <div class="blog-loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div class="rn-footer-area rn-section-gap section-separator">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-area text-center">
+                        <p class="description">© 2026 Utkarsh Shukla. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <div class="backto-top">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/vendor/jquery.min.js"></script>
+    <script src="assets/js/vendor/aos.js"></script>
+    <!-- Blog Data -->
+    <script src="data/blogs.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 500,
+            once: true
+        });
+
+        // ===========================================
+        // THEME TOGGLE SYSTEM
+        // ===========================================
+        (function () {
+            'use strict';
+
+            const THEME_KEY = 'portfolio-theme-preference';
+            const THEMES = ['light', 'dark', 'system'];
+
+            function getStoredTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function getSystemTheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function applyTheme(theme, isInitial = false) {
+                const body = document.body;
+
+                if (isInitial) {
+                    body.classList.add('no-transition');
+                }
+
+                body.classList.remove('white-version', 'dark-version');
+                body.removeAttribute('data-theme');
+
+                let actualTheme = theme;
+                if (theme === 'system') {
+                    actualTheme = getSystemTheme();
+                    body.setAttribute('data-theme', 'system');
+                }
+
+                if (actualTheme === 'light') {
+                    body.classList.add('white-version');
+                } else {
+                    body.classList.add('dark-version');
+                }
+
+                localStorage.setItem(THEME_KEY, theme);
+
+                if (isInitial) {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            body.classList.remove('no-transition');
+                        });
+                    });
+                }
+            }
+
+            function cycleTheme() {
+                const currentTheme = getStoredTheme();
+                const currentIndex = THEMES.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % THEMES.length;
+                const nextTheme = THEMES[nextIndex];
+                applyTheme(nextTheme);
+            }
+
+            function initTheme() {
+                const storedTheme = getStoredTheme();
+                applyTheme(storedTheme, true);
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                    if (getStoredTheme() === 'system') {
+                        applyTheme('system');
+                    }
+                });
+            }
+
+            function setupThemeToggle() {
+                const toggleBtn = document.getElementById('themeToggle');
+                let isThrottled = false;
+
+                function handleThemeToggle(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isThrottled) return;
+                    isThrottled = true;
+                    cycleTheme();
+                    setTimeout(() => { isThrottled = false; }, 300);
+                }
+
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', handleThemeToggle);
+                }
+            }
+
+            initTheme();
+            document.addEventListener('DOMContentLoaded', setupThemeToggle);
+        })();
+
+        // ===========================================
+        // BLOG LOADING FROM JS DATA
+        // ===========================================
+        function loadBlogs() {
+            const blogGrid = document.getElementById('blogGrid');
+
+            try {
+                // Use the global BLOG_DATA from blogs.js (no CORS issues!)
+                const data = window.BLOG_DATA;
+
+                if (data && data.blogs && data.blogs.length > 0) {
+                    blogGrid.innerHTML = data.blogs.map(blog => createBlogCard(blog)).join('');
+
+                    // Re-initialize AOS for new elements
+                    AOS.refresh();
+                } else {
+                    blogGrid.innerHTML = `
+                        <div class="no-posts">
+                            <h3>No blog posts yet</h3>
+                            <p>Check back soon for new content!</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                blogGrid.innerHTML = `
+                    <div class="no-posts">
+                        <h3>Unable to load blog posts</h3>
+                        <p>Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function createBlogCard(blog) {
+            const formattedDate = new Date(blog.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+
+            const tagsHtml = blog.tags.slice(0, 3).map(tag =>
+                `<span class="tag">${tag}</span>`
+            ).join('');
+
+            return `
+                <article class="blog-card" data-aos="fade-up" onclick="window.location.href='blog-post.html?slug=${blog.slug}'">
+                    <div class="thumbnail">
+                        <img src="${blog.featuredImage}" alt="${blog.title}" loading="lazy">
+                        <span class="category">${blog.category}</span>
+                    </div>
+                    <div class="content">
+                        <div class="meta">
+                            <span class="date">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                ${formattedDate}
+                            </span>
+                            <span class="read-time">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                ${blog.readTime}
+                            </span>
+                        </div>
+                        <h3 class="title">
+                            <a href="blog-post.html?slug=${blog.slug}">${blog.title}</a>
+                        </h3>
+                        <p class="excerpt">${blog.excerpt}</p>
+                        <div class="tags">${tagsHtml}</div>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Load blogs on page load
+        document.addEventListener('DOMContentLoaded', loadBlogs);
+
+        // Back to top functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const backToTop = document.querySelector('.backto-top');
+
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 100) {
+                    backToTop.style.opacity = '1';
+                } else {
+                    backToTop.style.opacity = '0';
+                }
+            });
+
+            backToTop.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Sticky header
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header--sticky');
+            if (window.scrollY > 250) {
+                header.classList.add('sticky');
+            } else {
+                header.classList.remove('sticky');
+            }
+        });
+    </script>
+</body>
+
+</html>

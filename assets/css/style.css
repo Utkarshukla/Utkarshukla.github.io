@@ -11264,7 +11264,7 @@ body.template-color-1 {
 }
 @media only screen and (max-width: 767px) {
   .logo a img {
-    max-height: 54px;
+    /* max-height: 54px; */
   }
 }
 
