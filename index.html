@@ -949,6 +949,38 @@
         }
     </style>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Fix for Navigation Click Issue - Ensure Nav is above other elements */
+        .mainmenu-nav {
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-right {
+            position: relative;
+            z-index: 90;
+        }
+
+        /* Title Typography Colors for Blog Page and Cards */
+        body.white-version .blog-card .title a,
+        body.white-version .post-header .title,
+        body.white-version .section-title .title {
+            color: #1c1e22 !important;
+        }
+
+        body.dark-version .blog-card .title a,
+        body.dark-version .post-header .title,
+        body.dark-version .section-title .title {
+            color: #ffffff !important;
+        }
+
+        /* Ensure cursor pointer on hover for interactive elements */
+        .nav-link,
+        .blog-card,
+        .blog-card .title a {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="template-color-1 spybody white-version" data-spy="scroll" data-target=".navbar-example2" data-offset="150"

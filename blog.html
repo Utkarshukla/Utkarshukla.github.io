@@ -165,21 +165,34 @@
             gap: 6px;
         }
 
+        .blog-card .title a {
+            color: #1c1e22;
+            /* Default Light Theme */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        /* Fix for line-clamp standard property */
         .blog-card .title {
             font-size: 22px;
             font-weight: 600;
             margin-bottom: 15px;
             line-height: 1.4;
             display: -webkit-box;
+            display: box;
+            /* Standard property for compatibility */
             -webkit-line-clamp: 2;
+            line-clamp: 2;
+            /* Standard property for compatibility */
             -webkit-box-orient: vertical;
+            box-orient: vertical;
+            /* Standard property for compatibility */
             overflow: hidden;
         }
 
-        .blog-card .title a {
-            color: #1e2125;
-            text-decoration: none;
-            transition: color 0.3s ease;
+        body.dark-version .blog-card .title a {
+            color: #ffffff;
+            /* Dark Theme Override */
         }
 
         .blog-card .title a:hover {
@@ -191,8 +204,11 @@
             line-height: 1.7;
             color: #3c3e41;
             display: -webkit-box;
+            display: box;
             -webkit-line-clamp: 3;
+            line-clamp: 3;
             -webkit-box-orient: vertical;
+            box-orient: vertical;
             overflow: hidden;
             margin-bottom: 20px;
         }
