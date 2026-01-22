@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Race Conditions & Resource Locking: Battle-Tested Strategies for Concurrent Systems | Utkarsh Shukla</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://utkarshukla.github.io/assets/img/utslogo.jpg">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="description"
+        content="Race conditions are the silent killers of production systems. They pass all tests, work perfectly in development, and only manifest when real users hit your system. Here's how to identify, prevent, and handle them.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords"
+        content="Race Conditions, Resource Locking, Concurrency, Distributed Systems, Redis Locking, Database Locking, Pessimistic Locking, Optimistic Locking, Backend Development, PHP Laravel">
+    <meta name="author" content="Utkarsh Shukla">
+    <meta name="article:published_time" content="2026-01-22">
+    <meta name="article:author" content="Utkarsh Shukla">
+    <meta name="article:section" content="Backend Strategy">
+    <meta name="article:tag" content="Concurrency, Distributed Systems, Locking, Redis, Database">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title"
+        content="Race Conditions & Resource Locking: Battle-Tested Strategies for Concurrent Systems">
+    <meta property="og:description"
+        content="Race conditions are the silent killers of production systems. They pass all tests, work perfectly in development, and only manifest when real users hit your system. Here's how to identify, prevent, and handle them.">
+    <meta property="og:image" content="https://utkarshukla.github.io/assets/images/blog/race-conditions.png">
+    <meta property="og:url" content="https://utkarshukla.github.io/blogs/race-conditions-resource-locking-strategies/">
+    <meta property="og:site_name" content="Utkarsh Shukla - Software Developer">
+    <meta property="article:published_time" content="2026-01-22T00:00:00+05:30">
+    <meta property="article:author" content="https://github.com/utkarshukla">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Race Conditions & Resource Locking: Battle-Tested Strategies">
+    <meta name="twitter:description"
+        content="Race conditions are the silent killers of production systems. Here's how to identify, prevent, and handle them with battle-tested locking strategies.">
+    <meta name="twitter:image" content="https://utkarshukla.github.io/assets/images/blog/race-conditions.png">
+    <meta name="twitter:creator" content="@utkarshukla">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://utkarshukla.github.io/blogs/race-conditions-resource-locking-strategies/">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Race Conditions & Resource Locking: Battle-Tested Strategies for Concurrent Systems",
+        "description": "Race conditions are the silent killers of production systems. They pass all tests, work perfectly in development, and only manifest when real users hit your system. Here's how to identify, prevent, and handle them.",
+        "image": "https://utkarshukla.github.io/assets/images/blog/race-conditions.png",
+        "datePublished": "2026-01-22",
+        "dateModified": "2026-01-22",
+        "author": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "url": "https://utkarshukla.github.io"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://utkarshukla.github.io/assets/img/utslogo.jpg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://utkarshukla.github.io/blogs/race-conditions-resource-locking-strategies/"
+        },
+        "keywords": ["Concurrency", "Distributed Systems", "Locking", "Redis", "Database", "Race Conditions"]
+    }
+    </script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/vendor/aos.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <!-- Prism.js for Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        /* ===========================================
+           BLOG POST PAGE STYLES
+        =========================================== */
+
+        :root {
+            --theme-transition: 0.3s ease;
+        }
+
+        body.dark-version {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .main-page-wrapper,
+        body.dark-version header.rn-header,
+        body.dark-version .rn-footer-area {
+            background-color: #212428 !important;
+        }
+
+        /* Blog Post Container */
+        .blog-post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 140px 20px 80px;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff014f;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 40px;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+            color: #ff014f;
+        }
+
+        .back-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+
+        /* Post Header */
+        .post-header {
+            margin-bottom: 40px;
+        }
+
+        .post-header .category {
+            display: inline-block;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .post-header .title {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 15px;
+        }
+
+        .post-header .subtitle {
+            font-size: 20px;
+            color: #878e99;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .post-header .meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-header .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-header .author img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-header .author-info .name {
+            font-weight: 600;
+            color: #1e2125;
+        }
+
+        .post-header .author-info .date {
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        .post-header .read-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        /* Featured Image */
+        .featured-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Post Content */
+        .post-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #3c3e41;
+        }
+
+        .post-content p {
+            margin-bottom: 25px;
+        }
+
+        .post-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 50px 0 20px;
+            color: #1e2125;
+        }
+
+        .post-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 15px;
+            color: #1e2125;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 25px;
+            padding-left: 25px;
+        }
+
+        .post-content li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .post-content strong {
+            color: #1e2125;
+            font-weight: 600;
+        }
+
+        /* Code Blocks */
+        .post-content pre {
+            background: #2d2d2d;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-content pre code {
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .post-content code:not(pre code) {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        }
+
+        /* Tags */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-tags .tag {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .post-tags .tag:hover {
+            background: #ff014f;
+            color: #fff;
+        }
+
+        /* Dark Theme Styles */
+        body.dark-version .post-header .title {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-header .subtitle {
+            color: #878e99;
+        }
+
+        body.dark-version .post-header .meta {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .post-header .author-info .name {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content {
+            color: #b8bcc4;
+        }
+
+        body.dark-version .post-content h2,
+        body.dark-version .post-content h3 {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content strong {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-tags {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .featured-image {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Theme Toggle Styles */
+        .theme-toggle-wrapper {
+            position: relative;
+            z-index: 100;
+        }
+
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e2e8ec, #ffffff);
+            box-shadow: 5px 5px 15px #D1D9E6, -5px -5px 15px #ffffff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .theme-toggle-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover::before {
+            opacity: 1;
+        }
+
+        .theme-toggle-btn svg {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .theme-toggle-btn .sun-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .moon-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .system-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover svg {
+            color: #ffffff;
+        }
+
+        body.dark-version .theme-toggle-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b);
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+        }
+
+        body.dark-version .theme-toggle-btn .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+        }
+
+        body.dark-version .theme-toggle-btn .moon-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .sun-icon,
+        body[data-theme="system"] .theme-toggle-btn .moon-icon {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .system-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Header */
+        body.dark-version .rn-header {
+            background-color: transparent !important;
+        }
+
+        body.dark-version .rn-header.sticky {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .mainmenu-nav .primary-menu li a,
+        body.dark-version #sideNav .primary-menu li a {
+            color: #ffffff !important;
+        }
+
+        body.dark-version .rn-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b) !important;
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e !important;
+        }
+
+        body.dark-version .rn-btn span {
+            color: #ff014f !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .blog-post-container {
+                padding: 120px 15px 60px;
+            }
+
+            .post-header .title {
+                font-size: 28px;
+            }
+
+            .post-header .subtitle {
+                font-size: 16px;
+            }
+
+            .post-content h2 {
+                font-size: 24px;
+            }
+
+            .post-content h3 {
+                font-size: 20px;
+            }
+
+            .post-content {
+                font-size: 16px;
+            }
+
+            .post-content pre {
+                padding: 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body class="template-color-1 spybody white-version">
+
+    <!-- Start Header -->
+    <header class="rn-header haeder-default black-logo-version header--fixed header--sticky">
+        <div class="header-wrapper rn-popup-mobile-menu m--0 row align-items-center">
+            <div class="col-lg-2 col-6">
+                <div class="header-left">
+                    <div class="logo">
+                        <a href="../../index.html" style="display: flex; align-items: center;">
+                            <img src="../../assets/img/utslogo.jpg" style="width: 60px; border-radius: 50%;"
+                                alt="Utkarsh Shukla">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-6">
+                <div class="header-center">
+                    <nav id="sideNav" class="mainmenu-nav navbar-example2 d-none d-xl-block">
+                        <ul class="primary-menu nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                            <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="header-right"
+                        style="display: flex !important; align-items: center !important; gap: 15px !important;">
+                        <a class="rn-btn"
+                            href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><span>Resume</span></a>
+                        <!-- Theme Toggle Button -->
+                        <div class="theme-toggle-wrapper" id="themeToggle" title="Toggle theme">
+                            <button class="theme-toggle-btn" aria-label="Toggle theme">
+                                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End Header -->
+
+    <main class="main-page-wrapper">
+        <div class="blog-post-container">
+            <a href="../../blog.html" class="back-link" data-aos="fade-right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Blog
+            </a>
+
+            <article>
+                <header class="post-header" data-aos="fade-up">
+                    <span class="category">Backend Strategy</span>
+                    <h1 class="title">Race Conditions & Resource Locking: Battle-Tested Strategies for Concurrent
+                        Systems</h1>
+                    <p class="subtitle">How to Build Robust Applications That Don't Break Under Concurrency</p>
+                    <div class="meta">
+                        <div class="author">
+                            <img src="../../assets/img/utslogo.jpg" alt="Utkarsh Shukla">
+                            <div class="author-info">
+                                <div class="name">Utkarsh Shukla</div>
+                                <div class="date">January 22, 2026</div>
+                            </div>
+                        </div>
+                        <span class="read-time">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            15 min read
+                        </span>
+                    </div>
+                </header>
+
+                <img src="../../assets/images/blog/race-conditions.png" alt="Race Conditions & Resource Locking"
+                    class="featured-image" data-aos="fade-up">
+
+                <div class="post-content" data-aos="fade-up">
+                    <p>I once spent 72 hours debugging a production issue where users were being charged twice for the
+                        same order. The code looked perfect. Tests passed. Code review approved. But under high
+                        concurrency, a race condition manifested that <strong>cost the company $47,000</strong> before
+                        we caught it. This experience taught me that concurrency bugs are the most expensive bugs you'll
+                        ever ship.</p>
+
+                    <h2>Understanding Race Conditions</h2>
+                    <p>A race condition occurs when the behavior of software depends on the relative timing of events,
+                        such as the order of thread execution. Here's the classic "double-spend" scenario:</p>
+
+                    <pre><code class="language-php">// Dangerous: Race condition in payment processing
+public function processPayment(Order $order) 
+{
+    // Thread A reads: isPaid = false
+    // Thread B reads: isPaid = false (simultaneous!)
+    if (!$order->isPaid()) {
+        $this->chargeCustomer($order);  // Both threads execute this!
+        $order->markAsPaid();
+    }
+}</code></pre>
+
+                    <p>Both threads see <code>isPaid = false</code> because neither has committed yet. Result: customer
+                        charged twice.</p>
+
+                    <h2>The Locking Toolkit: Choosing the Right Strategy</h2>
+
+                    <h3>1. Pessimistic Locking (Database-Level)</h3>
+                    <p>Use when: Write contention is high, and you need guaranteed consistency.</p>
+
+                    <pre><code class="language-php">// Laravel: Pessimistic locking with FOR UPDATE
+public function processPayment(Order $order)
+{
+    DB::transaction(function () use ($order) {
+        // Lock the row - other transactions wait
+        $order = Order::where('id', $order->id)
+            ->lockForUpdate()
+            ->first();
+        
+        if (!$order->isPaid()) {
+            $this->chargeCustomer($order);
+            $order->markAsPaid();
+            $order->save();
+        }
+    });
+}</code></pre>
+
+                    <p><strong>Pros</strong>: Simple, guaranteed consistency. <strong>Cons</strong>: Can cause
+                        deadlocks, reduces throughput.</p>
+
+                    <h3>2. Optimistic Locking (Version-Based)</h3>
+                    <p>Use when: Read-heavy workloads with occasional writes.</p>
+
+                    <pre><code class="language-php">// Model with version tracking
+class Order extends Model
+{
+    protected $fillable = ['amount', 'status', 'version'];
+}
+
+public function processPayment(Order $order)
+{
+    $currentVersion = $order->version;
+    
+    // Attempt update with version check
+    $updated = Order::where('id', $order->id)
+        ->where('version', $currentVersion)
+        ->where('status', '!=', 'paid')
+        ->update([
+            'status' => 'paid',
+            'version' => $currentVersion + 1
+        ]);
+    
+    if ($updated === 0) {
+        // Another process modified the order - retry or fail
+        throw new ConcurrencyException('Order was modified by another process');
+    }
+    
+    $this->chargeCustomer($order);
+}</code></pre>
+
+                    <h3>3. Distributed Locking with Redis</h3>
+                    <p>Use when: Multiple application servers need to coordinate access to shared resources.</p>
+
+                    <pre><code class="language-php">// Redis distributed lock implementation
+use Illuminate\Support\Facades\Cache;
+
+public function processPayment(Order $order)
+{
+    $lockKey = "order_lock:{$order->id}";
+    
+    // Acquire lock with 30 second TTL
+    $lock = Cache::lock($lockKey, 30);
+    
+    try {
+        // Block for max 10 seconds waiting for lock
+        if ($lock->block(10)) {
+            $order->refresh(); // Reload fresh data
+            
+            if (!$order->isPaid()) {
+                $this->chargeCustomer($order);
+                $order->markAsPaid();
+                $order->save();
+            }
+        } else {
+            throw new LockTimeoutException('Could not acquire lock');
+        }
+    } finally {
+        $lock->release();
+    }
+}</code></pre>
+
+                    <h3>4. Idempotency Keys</h3>
+                    <p>Use when: Protecting against duplicate API requests (retries, network issues).</p>
+
+                    <pre><code class="language-php">// Idempotency middleware
+public function handle(Request $request, Closure $next)
+{
+    $idempotencyKey = $request->header('Idempotency-Key');
+    
+    if ($idempotencyKey) {
+        $cacheKey = "idempotency:{$idempotencyKey}";
+        
+        // Check if request was already processed
+        if ($cachedResponse = Cache::get($cacheKey)) {
+            return response()->json(
+                json_decode($cachedResponse, true),
+                200,
+                ['X-Idempotent-Replayed' => 'true']
+            );
+        }
+        
+        $response = $next($request);
+        
+        // Cache response for 24 hours
+        Cache::put($cacheKey, $response->getContent(), 86400);
+        
+        return $response;
+    }
+    
+    return $next($request);
+}</code></pre>
+
+                    <h2>Deadlock Prevention Strategies</h2>
+                    <p>Deadlocks occur when two or more transactions wait for each other to release locks. Prevention
+                        strategies:</p>
+                    <ul>
+                        <li><strong>Consistent Lock Ordering</strong>: Always acquire locks in the same order across all
+                            transactions</li>
+                        <li><strong>Lock Timeouts</strong>: Set reasonable timeouts and retry with exponential backoff
+                        </li>
+                        <li><strong>Minimize Lock Scope</strong>: Hold locks for the shortest time possible</li>
+                        <li><strong>Avoid User Interaction While Holding Locks</strong>: Never wait for external input
+                            while holding a lock</li>
+                    </ul>
+
+                    <pre><code class="language-php">// Retry with exponential backoff
+public function executeWithRetry(callable $operation, int $maxRetries = 3)
+{
+    $attempt = 0;
+    
+    while ($attempt < $maxRetries) {
+        try {
+            return $operation();
+        } catch (DeadlockException $e) {
+            $attempt++;
+            if ($attempt >= $maxRetries) throw $e;
+            
+            // Exponential backoff: 100ms, 200ms, 400ms...
+            usleep(100000 * pow(2, $attempt - 1));
+        }
+    }
+}</code></pre>
+
+                    <h2>Testing for Race Conditions</h2>
+                    <p>Race conditions are notoriously hard to test because they depend on timing. Here's a testing
+                        strategy:</p>
+
+                    <pre><code class="language-php">// PHPUnit test for concurrent access
+public function test_payment_handles_concurrent_requests()
+{
+    $order = Order::factory()->create(['status' => 'pending', 'amount' => 100]);
+    
+    $promises = [];
+    
+    // Simulate 10 concurrent payment attempts
+    for ($i = 0; $i < 10; $i++) {
+        $promises[] = async(function () use ($order) {
+            return $this->paymentService->processPayment($order->id);
+        });
+    }
+    
+    $results = await($promises);
+    
+    // Only ONE payment should succeed
+    $successCount = collect($results)->filter(fn($r) => $r->success)->count();
+    $this->assertEquals(1, $successCount);
+    
+    // Customer should be charged exactly once
+    $this->assertEquals(1, Payment::where('order_id', $order->id)->count());
+}</code></pre>
+
+                    <h2>Key Takeaways</h2>
+                    <ul>
+                        <li>Race conditions are expensive—invest in prevention upfront</li>
+                        <li>Choose your locking strategy based on read/write ratio and scale requirements</li>
+                        <li>Always use idempotency keys for payment and critical operations</li>
+                        <li>Implement retry logic with exponential backoff for deadlock recovery</li>
+                        <li>Test concurrency explicitly—don't assume single-threaded behavior</li>
+                    </ul>
+
+                    <p>Remember: <strong>The cost of preventing race conditions is always less than the cost of fixing
+                            them in production.</strong></p>
+                </div>
+
+                <div class="post-tags" data-aos="fade-up">
+                    <span class="tag">Concurrency</span>
+                    <span class="tag">Distributed Systems</span>
+                    <span class="tag">Locking</span>
+                    <span class="tag">Redis</span>
+                    <span class="tag">Database</span>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div class="rn-footer-area rn-section-gap section-separator">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-area text-center">
+                        <p class="description">© 2026 Utkarsh Shukla. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <div class="backto-top">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/vendor/jquery.min.js"></script>
+    <script src="../../assets/js/vendor/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 500, once: true });
+
+        // ===========================================
+        // THEME TOGGLE SYSTEM
+        // ===========================================
+        (function () {
+            'use strict';
+
+            const THEME_KEY = 'portfolio-theme-preference';
+            const THEMES = ['light', 'dark', 'system'];
+
+            function getStoredTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function getSystemTheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function applyTheme(theme, isInitial = false) {
+                const body = document.body;
+
+                if (isInitial) body.classList.add('no-transition');
+
+                body.classList.remove('white-version', 'dark-version');
+                body.removeAttribute('data-theme');
+
+                let actualTheme = theme;
+                if (theme === 'system') {
+                    actualTheme = getSystemTheme();
+                    body.setAttribute('data-theme', 'system');
+                }
+
+                if (actualTheme === 'light') {
+                    body.classList.add('white-version');
+                } else {
+                    body.classList.add('dark-version');
+                }
+
+                localStorage.setItem(THEME_KEY, theme);
+
+                if (isInitial) {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            body.classList.remove('no-transition');
+                        });
+                    });
+                }
+            }
+
+            function cycleTheme() {
+                const currentTheme = getStoredTheme();
+                const currentIndex = THEMES.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % THEMES.length;
+                applyTheme(THEMES[nextIndex]);
+            }
+
+            function initTheme() {
+                applyTheme(getStoredTheme(), true);
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                    if (getStoredTheme() === 'system') applyTheme('system');
+                });
+            }
+
+            function setupThemeToggle() {
+                const toggleBtn = document.getElementById('themeToggle');
+                let isThrottled = false;
+
+                function handleThemeToggle(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isThrottled) return;
+                    isThrottled = true;
+                    cycleTheme();
+                    setTimeout(() => { isThrottled = false; }, 300);
+                }
+
+                if (toggleBtn) toggleBtn.addEventListener('click', handleThemeToggle);
+            }
+
+            initTheme();
+            document.addEventListener('DOMContentLoaded', setupThemeToggle);
+        })();
+
+        // Prism highlighting
+        Prism.highlightAll();
+
+        // Back to top
+        document.addEventListener('DOMContentLoaded', function () {
+            const backToTop = document.querySelector('.backto-top');
+
+            window.addEventListener('scroll', function () {
+                backToTop.style.opacity = window.scrollY > 100 ? '1' : '0';
+            });
+
+            backToTop.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Sticky header
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header--sticky');
+            header.classList.toggle('sticky', window.scrollY > 250);
+        });
+    </script>
+</body>
+
+</html>

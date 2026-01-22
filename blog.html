@@ -678,7 +678,7 @@
             ).join('');
 
             return `
-                <article class="blog-card" data-aos="fade-up" onclick="window.location.href='blog-post.html?slug=${blog.slug}'">
+                <article class="blog-card" data-aos="fade-up" onclick="window.location.href='blogs/${blog.slug}/'">
                     <div class="thumbnail">
                         <img src="${blog.featuredImage}" alt="${blog.title}" loading="lazy">
                         <span class="category">${blog.category}</span>
@@ -703,7 +703,7 @@
                             </span>
                         </div>
                         <h3 class="title">
-                            <a href="blog-post.html?slug=${blog.slug}">${blog.title}</a>
+                            <a href="blogs/${blog.slug}/">${blog.title}</a>
                         </h3>
                         <p class="excerpt">${blog.excerpt}</p>
                         <div class="tags">${tagsHtml}</div>
