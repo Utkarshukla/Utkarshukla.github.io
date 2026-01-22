@@ -950,7 +950,7 @@
     </style>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Fix for Navigation Click Issue - Ensure Nav is above other elements */
+        /* Fix for Navigation and Toggle Click Issues */
         .mainmenu-nav {
             position: relative;
             z-index: 100;
@@ -959,6 +959,20 @@
         .header-right {
             position: relative;
             z-index: 90;
+        }
+
+        /* Ensure Theme Toggle is always clickable above nav overlap */
+        .theme-toggle-wrapper {
+            position: relative;
+            z-index: 101 !important;
+            cursor: pointer;
+        }
+
+        /* Ensure the button itself is clickable */
+        .theme-toggle-btn {
+            pointer-events: auto;
+            position: relative;
+            z-index: 102;
         }
 
         /* Title Typography Colors for Blog Page and Cards */

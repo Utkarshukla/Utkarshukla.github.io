@@ -290,7 +290,19 @@
         /* Theme Toggle Styles */
         .theme-toggle-wrapper {
             position: relative;
+            z-index: 102 !important;
+            /* Higher than nav */
+        }
+
+        /* Navigation & Header Z-Index Fixes */
+        .mainmenu-nav {
+            position: relative;
             z-index: 100;
+        }
+
+        .header-right {
+            position: relative;
+            z-index: 90;
         }
 
         .theme-toggle-btn {
