@@ -1089,7 +1089,7 @@ systemctl enable nginx</code></pre>
 }</code></pre>
                             <div class="warning">
                                 Replace <code>your-server-ip-or-domain</code> with your actual server IP (e.g.,
-                                31.97.61.59) or domain name.
+                                ) or domain name.
                                 Replace <code>localhost:9002</code> with your application's port.
                             </div>
                         </div>
@@ -1199,7 +1199,7 @@ chmod 600 ~/.ssh/authorized_keys</code></pre>
                                 </tr>
                                 <tr>
                                     <td><code>DEPLOY_PATH</code></td>
-                                    <td>Deployment path (e.g., <code>/root/sabeel/backend/sabeel-tv-be-node</code>)</td>
+                                    <td>Deployment path (e.g., <code>/root/apps/your-app-name</code>)</td>
                                     <td>✅ Yes</td>
                                     <td>❌ No</td>
                                 </tr>
@@ -1224,7 +1224,8 @@ chmod 600 ~/.ssh/authorized_keys</code></pre>
                             <strong>Option A: Personal Access Token (Recommended)</strong>
                             <ol>
                                 <li>Click your <strong>profile picture</strong> (top right) →
-                                    <strong>Preferences</strong></li>
+                                    <strong>Preferences</strong>
+                                </li>
                                 <li>In left sidebar, click <strong>Access Tokens</strong></li>
                                 <li>Create new token:
                                     <ul>
@@ -1284,7 +1285,8 @@ apt-get install gitlab-runner -y</code></pre>
                             <p>When prompted, enter:</p>
                             <ul>
                                 <li><strong>GitLab URL:</strong> Your GitLab instance URL (e.g.,
-                                    <code>https://your-gitlab.com</code>)</li>
+                                    <code>https://your-gitlab.com</code>)
+                                </li>
                                 <li><strong>Registration token:</strong> The token from step 3</li>
                                 <li><strong>Description:</strong> <code>vps-runner</code></li>
                                 <li><strong>Tags:</strong> <code>vps</code> (or leave empty)</li>
@@ -1382,8 +1384,8 @@ CMD ["node", "index.js"]</code></pre>
                             <strong>Create <code>docker-compose.prod.yml</code>:</strong>
                             <pre><code class="language-yaml">services:
   app:
-    image: sabeel-tv-be-node:latest
-    container_name: sabeel-tv-be-node
+    image: your-app-name:latest
+    container_name: your-app-name
     restart: unless-stopped
     env_file:
       - .env
@@ -1398,7 +1400,7 @@ CMD ["node", "index.js"]</code></pre>
 
   redis:
     image: redis:7-alpine
-    container_name: sabeel-redis
+    container_name: redis-service
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -1516,7 +1518,8 @@ git push origin main</code></pre>
                             <li><strong>SSH Connection Failed:</strong> Check if correct private key is added to GitLab
                                 variables and public key is in <code>authorized_keys</code> on VPS.</li>
                             <li><strong>Docker Permission Denied:</strong> Ensure the user is added to
-                                <code>docker</code> group or use root.</li>
+                                <code>docker</code> group or use root.
+                            </li>
                             <li><strong>Port Already in Use:</strong> Check if another service is using port 9002 or 80.
                             </li>
                             <li><strong>Pipeline Fails:</strong> Check the job logs in GitLab for error messages.</li>
@@ -1524,7 +1527,7 @@ git push origin main</code></pre>
 
                         <div class="info">
                             <strong>View Logs on VPS:</strong>
-                            <pre><code class="language-bash">docker logs -f sabeel-tv-be-node
+                            <pre><code class="language-bash">docker logs -f your-app-name
 # or
 docker compose -f docker-compose.prod.yml logs -f app</code></pre>
                         </div>
