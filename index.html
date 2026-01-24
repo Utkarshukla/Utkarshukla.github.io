@@ -992,7 +992,14 @@
         .nav-link,
         .blog-card,
         .blog-card .title a {
-            cursor: pointer;
+            cursor: pointer !important;
+        }
+
+        /* Force Nav Links to be clickable and above overlays */
+        .mainmenu-nav .nav-pills .nav-item .nav-link {
+            cursor: pointer !important;
+            position: relative;
+            z-index: 105;
         }
     </style>
 </head>

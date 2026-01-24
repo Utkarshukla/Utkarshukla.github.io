@@ -157,8 +157,11 @@
             font-weight: 700;
             line-height: 1.3;
             margin-bottom: 15px;
-            color: #1c1e22;
-            /* Explicit Light Theme Color */
+            color: #1c1e22 !important;
+        }
+
+        body.white-version .post-header .title {
+            color: #1c1e22 !important;
         }
 
         .post-header .subtitle {
@@ -357,6 +360,12 @@
         .mainmenu-nav {
             position: relative;
             z-index: 100;
+        }
+
+        .mainmenu-nav .nav-pills .nav-item .nav-link {
+            cursor: pointer !important;
+            position: relative;
+            z-index: 105;
         }
 
         .header-right {
