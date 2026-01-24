@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Complete Node.js Deployment Guide - Docker, GitLab CI/CD & Nginx | Utkarsh Shukla</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://utkarshukla.github.io/assets/img/utslogo.jpg">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="description"
+        content="A complete step-by-step guide to deploying Node.js applications on VPS using Docker, implementing automated CI/CD with GitLab, and setting up Nginx reverse proxy.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords"
+        content="Node.js, Docker, GitLab CI/CD, Nginx, VPS, Deployment, DevOps, Ubuntu, Continuous Integration, Continuous Deployment">
+    <meta name="author" content="Utkarsh Shukla">
+    <meta name="article:published_time" content="2026-01-25">
+    <meta name="article:author" content="Utkarsh Shukla">
+    <meta name="article:section" content="DevOps">
+    <meta name="article:tag" content="Docker, GitLab, Nginx, VPS, Node.js">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Complete Node.js Deployment Guide - Docker, GitLab CI/CD & Nginx">
+    <meta property="og:description"
+        content="A complete step-by-step guide to deploying Node.js applications on VPS using Docker, implementing automated CI/CD with GitLab, and setting up Nginx reverse proxy.">
+    <meta property="og:image" content="https://utkarshukla.github.io/assets/images/blog/gitlab-cicd.png">
+    <meta property="og:url" content="https://utkarshukla.github.io/blogs/gitlab-cicd-vps-setup/">
+    <meta property="og:site_name" content="Utkarsh Shukla - Software Developer">
+    <meta property="article:published_time" content="2026-01-25T00:00:00+05:30">
+    <meta property="article:author" content="https://github.com/utkarshukla">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Complete Node.js Deployment Guide - Docker, GitLab CI/CD & Nginx">
+    <meta name="twitter:description"
+        content="A complete step-by-step guide to deploying Node.js applications on VPS using Docker, implementing automated CI/CD with GitLab, and setting up Nginx reverse proxy.">
+    <meta name="twitter:image" content="https://utkarshukla.github.io/assets/images/blog/gitlab-cicd.png">
+    <meta name="twitter:creator" content="@utkarshukla">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://utkarshukla.github.io/blogs/gitlab-cicd-vps-setup/">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Complete Node.js Deployment Guide - Docker, GitLab CI/CD & Nginx",
+        "description": "A complete step-by-step guide to deploying Node.js applications on VPS using Docker, implementing automated CI/CD with GitLab, and setting up Nginx reverse proxy.",
+        "image": "https://utkarshukla.github.io/assets/images/blog/gitlab-cicd.png",
+        "datePublished": "2026-01-25",
+        "dateModified": "2026-01-25",
+        "author": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "url": "https://utkarshukla.github.io"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://utkarshukla.github.io/assets/img/utslogo.jpg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://utkarshukla.github.io/blogs/gitlab-cicd-vps-setup/"
+        },
+        "keywords": ["Node.js", "Docker", "GitLab CI/CD", "Nginx", "VPS"]
+    }
+    </script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/vendor/aos.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <!-- Prism.js for Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        /* ===========================================
+           BLOG POST PAGE STYLES
+        =========================================== */
+
+        :root {
+            --theme-transition: 0.3s ease;
+        }
+
+        body.dark-version {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .main-page-wrapper,
+        body.dark-version header.rn-header,
+        body.dark-version .rn-footer-area {
+            background-color: #212428 !important;
+        }
+
+        /* Blog Post Container */
+        .blog-post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 140px 20px 80px;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff014f;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 40px;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+            color: #ff014f;
+        }
+
+        .back-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+
+        /* Post Header */
+        .post-header {
+            margin-bottom: 40px;
+        }
+
+        .post-header .category {
+            display: inline-block;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .post-header .title {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            color: #1c1e22 !important;
+        }
+
+        body.white-version .post-header .title {
+            color: #1c1e22 !important;
+        }
+
+        .post-header .subtitle {
+            font-size: 20px;
+            color: #878e99;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .post-header .meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-header .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-header .author img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-header .author-info .name {
+            font-weight: 600;
+            color: #1e2125;
+        }
+
+        .post-header .author-info .date {
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        .post-header .read-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        /* Featured Image */
+        .featured-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Post Content */
+        .post-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #3c3e41;
+        }
+
+        .post-content p {
+            margin-bottom: 25px;
+        }
+
+        .post-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 50px 0 20px;
+            color: #1e2125;
+        }
+
+        .post-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 15px;
+            color: #1e2125;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 25px;
+            padding-left: 25px;
+        }
+
+        .post-content li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .post-content strong {
+            color: #1e2125;
+            font-weight: 600;
+        }
+
+        /* Code Blocks */
+        .post-content pre {
+            background: #2d2d2d;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-content pre code {
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .post-content code:not(pre code) {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        }
+
+        /* Tags */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-tags .tag {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .post-tags .tag:hover {
+            background: #ff014f;
+            color: #fff;
+        }
+
+        /* Dark Theme Styles */
+        body.dark-version .post-header .title {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-header .subtitle {
+            color: #878e99;
+        }
+
+        body.dark-version .post-header .meta {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .post-header .author-info .name {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content {
+            color: #b8bcc4;
+        }
+
+        body.dark-version .post-content h2,
+        body.dark-version .post-content h3 {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content strong {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-tags {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .featured-image {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Theme Toggle Styles */
+        .theme-toggle-wrapper {
+            position: relative;
+            z-index: 102 !important;
+        }
+
+        /* Navigation & Header Z-Index Fixes */
+        .mainmenu-nav {
+            position: relative;
+            z-index: 100;
+        }
+
+        .mainmenu-nav .nav-pills .nav-item .nav-link {
+            cursor: pointer !important;
+            position: relative;
+            z-index: 105;
+        }
+
+        .header-right {
+            position: relative;
+            z-index: 90;
+        }
+
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e2e8ec, #ffffff);
+            box-shadow: 5px 5px 15px #D1D9E6, -5px -5px 15px #ffffff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .theme-toggle-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover::before {
+            opacity: 1;
+        }
+
+        .theme-toggle-btn svg {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .theme-toggle-btn .sun-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .moon-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .system-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover svg {
+            color: #ffffff;
+        }
+
+        body.dark-version .theme-toggle-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b);
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+        }
+
+        body.dark-version .theme-toggle-btn .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+        }
+
+        body.dark-version .theme-toggle-btn .moon-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .sun-icon,
+        body[data-theme="system"] .theme-toggle-btn .moon-icon {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .system-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Header */
+        body.dark-version .rn-header {
+            background-color: transparent !important;
+        }
+
+        body.dark-version .rn-header.sticky {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .mainmenu-nav .primary-menu li a,
+        body.dark-version #sideNav .primary-menu li a {
+            color: #ffffff !important;
+        }
+
+        body.dark-version .rn-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b) !important;
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e !important;
+        }
+
+        body.dark-version .rn-btn span {
+            color: #ff014f !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .blog-post-container {
+                padding: 120px 15px 60px;
+            }
+
+            .post-header .title {
+                font-size: 28px;
+            }
+
+            .post-header .subtitle {
+                font-size: 16px;
+            }
+
+            .post-content h2 {
+                font-size: 24px;
+            }
+
+            .post-content h3 {
+                font-size: 20px;
+            }
+
+            .post-content {
+                font-size: 16px;
+            }
+
+            .post-content pre {
+                padding: 15px;
+                font-size: 12px;
+            }
+        }
+
+        /* Tutorial Specific Styles */
+        .step {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #ff014f;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .checkpoint {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .checkpoint::before {
+            content: "✓ Checkpoint: ";
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .warning::before {
+            content: "⚠ Warning: ";
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .info::before {
+            content: "ℹ Info: ";
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .success::before {
+            content: "✅ Success: ";
+            font-weight: bold;
+            color: #155724;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background: #1c1e22;
+            color: white;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            text-decoration: none;
+            color: #ff014f;
+            font-weight: 500;
+        }
+
+        body.dark-version .step,
+        body.dark-version .toc {
+            background: #1e2024;
+            border-color: #3c3f43;
+        }
+
+        body.dark-version table,
+        body.dark-version th,
+        body.dark-version td {
+            border-color: #3c3f43;
+        }
+
+        body.dark-version th {
+            background: #18191b;
+        }
+    </style>
+</head>
+
+<body class="template-color-1 spybody white-version">
+
+    <!-- Start Header -->
+    <header class="rn-header haeder-default black-logo-version header--fixed header--sticky">
+        <div class="header-wrapper rn-popup-mobile-menu m--0 row align-items-center">
+            <div class="col-lg-2 col-6">
+                <div class="header-left">
+                    <div class="logo">
+                        <a href="../../index.html" style="display: flex; align-items: center;">
+                            <img src="../../assets/img/utslogo.jpg" style="width: 60px; border-radius: 50%;"
+                                alt="Utkarsh Shukla">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-6">
+                <div class="header-center">
+                    <nav id="sideNav" class="mainmenu-nav navbar-example2 d-none d-xl-block">
+                        <ul class="primary-menu nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#clients">Clients</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#calendar">Github</a></li>
+                            <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="header-right"
+                        style="display: flex !important; align-items: center !important; gap: 15px !important;">
+                        <a class="rn-btn"
+                            href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><span>Resume</span></a>
+                        <!-- Theme Toggle Button -->
+                        <div class="theme-toggle-wrapper" id="themeToggle" title="Toggle theme">
+                            <button class="theme-toggle-btn" aria-label="Toggle theme">
+                                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="hamberger-menu d-block d-xl-none"
+                            style="display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; z-index: 1000 !important; margin-left: 15px !important; min-width: 28px !important; min-height: 28px !important;">
+                            <span id="menuBtn" class="humberger-menu"
+                                style="display: block !important; visibility: visible !important; color: #1b1b18 !important; cursor: pointer !important; width: 28px !important; height: 28px !important;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-menu">
+                                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="close-menu d-block">
+                            <span class="closeTrigger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- End Header Right  -->
+
+                </div>
+            </div>
+            <!-- End Header Center -->
+        </div>
+    </header>
+    <!-- End Header Area -->
+
+    <!-- Start Popup Mobile Menu  -->
+    <div class="popup-mobile-menu">
+        <div class="inner">
+            <div class="menu-top">
+                <div class="menu-header">
+                    <a class="logo" href="../../index.html">
+                        <img src="../../assets/img/utslogo.jpg" style="width: 80px; border-radius: 50%;"
+                            alt="Utkarsh Shukla">
+                    </a>
+                    <div class="close-button">
+                        <button class="close-menu-activation close"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg></button>
+                    </div>
+                </div>
+                <p class="discription">Code with Utkarsh Shukla, Professional Web Developer.</p>
+            </div>
+            <div class="content">
+                <ul class="primary-menu nav nav-pills onepagenav">
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#clients">Clients</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#calendar">Github</a></li>
+                    <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                            href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing">Resume</a>
+                    </li>
+                </ul>
+                <!-- Theme Toggle in Mobile Menu -->
+                <div class="theme-toggle-mobile mt--30" style="display: flex; align-items: center; gap: 15px;">
+                    <span class="title" style="margin-bottom: 0;">Theme</span>
+                    <div class="theme-toggle-wrapper" id="themeToggleMobile" title="Toggle theme">
+                        <button class="theme-toggle-btn" aria-label="Toggle theme">
+                            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                            <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <!-- social sharea area -->
+                <div class="social-share-style-1 mt--40">
+                    <span class="title">find with me</span>
+                    <ul class="social-share d-flex liststyle">
+                        <li class="facebook"><a
+                                href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-file-text">
+                                    <path d="M4 1v22h16V7.5L14.5 1H4z" />
+                                    <polyline points="14 1 14 7 20 7" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <polyline points="10 9 9 9 8 9" />
+                                </svg></a>
+                        </li>
+                        <li class="instagram"><a href="https://github.com/Utkarshukla"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-github">
+                                    <path
+                                        d="M0 0v24h24V0H0zm12 2C6.477 2 2 6.477 2 12c0 4.419 2.865 8.17 6.839 9.488.5.094.683-.217.683-.48 0-.237-.008-.866-.012-1.7-2.782.605-3.37-1.338-3.37-1.338-.454-1.15-1.107-1.457-1.107-1.457-.906-.617.068-.604.068-.604 1.004.07 1.53 1.03 1.53 1.03.892 1.526 2.34 1.086 2.91.83.092-.644.35-1.085.637-1.334-2.23-.254-4.572-1.115-4.572-4.95 0-1.093.39-1.987 1.032-2.684-.104-.253-.448-1.27.098-2.647 0 0 .84-.268 2.75 1.025a9.56 9.56 0 0 1 2.492-.336c.846.006 1.7.114 2.492.336 1.908-1.293 2.746-1.025 2.746-1.025.548 1.377.204 2.394.1 2.647.642.697 1.03 1.59 1.03 2.684 0 3.844-2.348 4.692-4.584 4.936.36.31.678.922.678 1.854 0 1.338-.012 2.416-.012 2.744 0 .267.18.578.688.48C19.138 20.17 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                                </svg></a>
+                        </li>
+                        <li class="linkedin"><a href="https://www.linkedin.com/in/utkarsh-shukla-33a077218/"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-linkedin">
+                                    <path
+                                        d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z">
+                                    </path>
+                                    <rect x="2" y="9" width="4" height="12"></rect>
+                                    <circle cx="4" cy="4" r="2"></circle>
+                                </svg></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- end -->
+            </div>
+        </div>
+    </div>
+    <!-- End Popup Mobile Menu  -->
+
+    <main class="main-page-wrapper">
+        <div class="blog-post-container">
+            <a href="../../blog.html" class="back-link" data-aos="fade-right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Blog
+            </a>
+
+            <article>
+                <header class="post-header" data-aos="fade-up">
+                    <span class="category">DevOps</span>
+                    <h1 class="title">Complete Node.js Deployment Guide - Docker, GitLab CI/CD & Nginx</h1>
+                    <p class="subtitle">A Step-by-Step Guide to Automating Your Deployment Pipeline</p>
+                    <div class="meta">
+                        <div class="author">
+                            <img src="../../assets/img/utslogo.jpg" alt="Utkarsh Shukla">
+                            <div class="author-info">
+                                <div class="name">Utkarsh Shukla</div>
+                                <div class="date">January 25, 2026</div>
+                            </div>
+                        </div>
+                        <span class="read-time">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            20 min read
+                        </span>
+                    </div>
+                </header>
+
+                <div class="post-content" data-aos="fade-up">
+                    <section id="overview">
+                        <h2>📋 Overview</h2>
+                        <p>This guide will walk you through deploying a Node.js application to a VPS using Docker,
+                            GitLab CI/CD, and Nginx. By the end, you'll have:</p>
+                        <ul>
+                            <li>✅ A Node.js app running in Docker containers</li>
+                            <li>✅ Automated CI/CD pipeline with GitLab</li>
+                            <li>✅ Nginx reverse proxy configured</li>
+                            <li>✅ Automatic deployment on code push</li>
+                        </ul>
+
+                        <div class="toc">
+                            <h3>Table of Contents</h3>
+                            <ul>
+                                <li><a href="#prerequisites">1. Prerequisites</a></li>
+                                <li><a href="#vps-setup">2. VPS Initial Setup</a></li>
+                                <li><a href="#docker-setup">3. Docker Installation & Configuration</a></li>
+                                <li><a href="#nginx-setup">4. Nginx Installation & Configuration</a></li>
+                                <li><a href="#gitlab-setup">5. GitLab CI/CD Setup</a></li>
+                                <li><a href="#app-config">6. Application Configuration</a></li>
+                                <li><a href="#deployment">7. Deployment Process</a></li>
+                                <li><a href="#troubleshooting">8. Troubleshooting</a></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section id="prerequisites">
+                        <h2>📦 Prerequisites</h2>
+
+                        <h3>What You Need</h3>
+                        <ul>
+                            <li><strong>VPS Server:</strong> Ubuntu 20.04+ or similar Linux distribution</li>
+                            <li><strong>SSH Access:</strong> Root or sudo access to your VPS</li>
+                            <li><strong>GitLab Account:</strong> Access to a GitLab instance (self-hosted or GitLab.com)
+                            </li>
+                            <li><strong>Domain/IP:</strong> Your server's IP address or domain name</li>
+                            <li><strong>Node.js Application:</strong> Your application code in a GitLab repository</li>
+                        </ul>
+
+                        <div class="checkpoint">
+                            Before starting, ensure you have SSH access to your VPS and can log in as root or a user
+                            with sudo privileges.
+                        </div>
+                    </section>
+
+                    <section id="vps-setup">
+                        <h2>🖥️ VPS Initial Setup</h2>
+
+                        <h3>Step 1: Connect to Your VPS</h3>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>SSH into your server:</strong>
+                            <pre><code class="language-bash">ssh root@your-server-ip
+# or
+ssh user@your-server-ip</code></pre>
+                        </div>
+
+                        <h3>Step 2: Update System Packages</h3>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Update and upgrade your system:</strong>
+                            <pre><code class="language-bash">apt update && apt upgrade -y</code></pre>
+                        </div>
+
+                        <h3>Step 3: Install Basic Tools</h3>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Install essential packages:</strong>
+                            <pre><code class="language-bash">apt install -y curl wget git vim</code></pre>
+                        </div>
+
+                        <div class="checkpoint">
+                            Your VPS is now updated and ready. You should be able to run basic commands.
+                        </div>
+                    </section>
+
+                    <section id="docker-setup">
+                        <h2>🐳 Docker Installation & Configuration</h2>
+
+                        <h3>Step 1: Install Docker</h3>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Install Docker using the official script:</strong>
+                            <pre><code class="language-bash">curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh</code></pre>
+                        </div>
+
+                        <h3>Step 2: Verify Docker Installation</h3>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Check Docker version:</strong>
+                            <pre><code class="language-bash">docker --version
+docker compose version</code></pre>
+                            <div class="info">
+                                You should see Docker version 20.10+ and Docker Compose version 2.0+
+                            </div>
+                        </div>
+
+                        <h3>Step 3: Add User to Docker Group (Optional)</h3>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>If not using root, add your user to docker group:</strong>
+                            <pre><code class="language-bash">usermod -aG docker $USER
+# Log out and back in for changes to take effect</code></pre>
+                        </div>
+
+                        <h3>Step 4: Test Docker</h3>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <strong>Run a test container:</strong>
+                            <pre><code class="language-bash">docker run hello-world</code></pre>
+                            <div class="success">
+                                If you see "Hello from Docker!" message, Docker is working correctly!
+                            </div>
+                        </div>
+
+                        <div class="checkpoint">
+                            Docker is installed and working. You can now run Docker containers.
+                        </div>
+                    </section>
+
+                    <section id="nginx-setup">
+                        <h2>🌐 Nginx Installation & Configuration</h2>
+
+                        <h3>Step 1: Install Nginx</h3>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Install Nginx:</strong>
+                            <pre><code class="language-bash">apt install -y nginx</code></pre>
+                        </div>
+
+                        <h3>Step 2: Start and Enable Nginx</h3>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Start Nginx service:</strong>
+                            <pre><code class="language-bash">systemctl start nginx
+systemctl enable nginx</code></pre>
+                        </div>
+
+                        <h3>Step 3: Verify Nginx is Running</h3>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Check Nginx status:</strong>
+                            <pre><code class="language-bash">systemctl status nginx</code></pre>
+                            <div class="info">
+                                You should see "active (running)" status
+                            </div>
+                        </div>
+
+                        <h3>Step 4: Configure Nginx for Your Application</h3>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <strong>Create Nginx configuration file:</strong>
+                            <pre><code class="language-bash">nano /etc/nginx/sites-available/your-app-name</code></pre>
+                            <strong>Add the following configuration:</strong>
+                            <pre><code class="language-nginx">server {
+    listen 80;
+    server_name your-server-ip-or-domain;
+
+    # Logging
+    access_log /var/log/nginx/your-app-access.log;
+    error_log /var/log/nginx/your-app-error.log;
+
+    # Increase body size for file uploads
+    client_max_body_size 100M;
+
+    # Proxy settings
+    location / {
+        proxy_pass http://localhost:9002;
+        proxy_http_version 1.1;
+        
+        # Headers
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
+        
+        # WebSocket support (if needed)
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        
+        # Timeouts
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+}</code></pre>
+                            <div class="warning">
+                                Replace <code>your-server-ip-or-domain</code> with your actual server IP (e.g.,
+                                31.97.61.59) or domain name.
+                                Replace <code>localhost:9002</code> with your application's port.
+                            </div>
+                        </div>
+
+                        <h3>Step 5: Enable the Configuration</h3>
+                        <div class="step">
+                            <span class="step-number">5</span>
+                            <strong>Create symbolic link to enable the site:</strong>
+                            <pre><code class="language-bash">ln -s /etc/nginx/sites-available/your-app-name /etc/nginx/sites-enabled/</code></pre>
+                        </div>
+
+                        <h3>Step 6: Test and Reload Nginx</h3>
+                        <div class="step">
+                            <span class="step-number">6</span>
+                            <strong>Test Nginx configuration:</strong>
+                            <pre><code class="language-bash">nginx -t</code></pre>
+                            <strong>If test passes, reload Nginx:</strong>
+                            <pre><code class="language-bash">systemctl reload nginx</code></pre>
+                        </div>
+
+                        <div class="checkpoint">
+                            Nginx is installed and configured. Your app will be accessible via Nginx once the
+                            application is running.
+                        </div>
+                    </section>
+
+                    <section id="gitlab-setup">
+                        <h2>🔧 GitLab CI/CD Setup</h2>
+
+                        <h3>Part 1: Generate SSH Keys on VPS</h3>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>SSH into your VPS and generate SSH key pair:</strong>
+                            <pre><code class="language-bash">ssh root@your-server-ip
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+ssh-keygen -t ed25519 -C "gitlab-ci-deploy" -f ~/.ssh/gitlab_ci_deploy -N ""</code></pre>
+                            <div class="info">
+                                This creates two files:
+                                <ul>
+                                    <li><code>~/.ssh/gitlab_ci_deploy</code> - Private key (keep secret!)</li>
+                                    <li><code>~/.ssh/gitlab_ci_deploy.pub</code> - Public key</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Add public key to authorized_keys:</strong>
+                            <pre><code class="language-bash">cat ~/.ssh/gitlab_ci_deploy.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys</code></pre>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Display the private key (you'll need this for GitLab):</strong>
+                            <pre><code class="language-bash">cat ~/.ssh/gitlab_ci_deploy</code></pre>
+                            <div class="warning">
+                                Copy the entire output including <code>-----BEGIN OPENSSH PRIVATE KEY-----</code> and
+                                <code>-----END OPENSSH PRIVATE KEY-----</code>
+                            </div>
+                        </div>
+
+                        <h3>Part 2: GitLab Navigation Guide</h3>
+
+                        <h4>Finding GitLab CI/CD Variables</h4>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Navigate to your GitLab project:</strong>
+                            <ol>
+                                <li>Go to your GitLab instance (e.g., <code>https://your-gitlab.com</code>)</li>
+                                <li>Click on your <strong>Project</strong></li>
+                                <li>In the left sidebar, click <strong>Settings</strong> (gear icon)</li>
+                                <li>Click <strong>CI/CD</strong> in the settings menu</li>
+                                <li>Expand the <strong>Variables</strong> section</li>
+                            </ol>
+                        </div>
+
+                        <h4>Adding GitLab CI/CD Variables</h4>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Click "Add variable" and add these variables one by one:</strong>
+                            <table>
+                                <tr>
+                                    <th>Variable Name</th>
+                                    <th>Value</th>
+                                    <th>Protected</th>
+                                    <th>Masked</th>
+                                </tr>
+                                <tr>
+                                    <td><code>SSH_PRIVATE_KEY</code></td>
+                                    <td>Paste the private key from step 3 above</td>
+                                    <td>✅ Yes</td>
+                                    <td>✅ Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DEPLOY_SERVER_HOST</code></td>
+                                    <td>Your server IP (e.g., 31.97.61.59)</td>
+                                    <td>✅ Yes</td>
+                                    <td>❌ No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DEPLOY_USER</code></td>
+                                    <td>SSH username (usually <code>root</code>)</td>
+                                    <td>✅ Yes</td>
+                                    <td>❌ No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DEPLOY_PATH</code></td>
+                                    <td>Deployment path (e.g., <code>/root/sabeel/backend/sabeel-tv-be-node</code>)</td>
+                                    <td>✅ Yes</td>
+                                    <td>❌ No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>CI_REGISTRY_USER</code></td>
+                                    <td>Your GitLab username</td>
+                                    <td>✅ Yes</td>
+                                    <td>❌ No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>CI_REGISTRY_PASSWORD</code></td>
+                                    <td>GitLab token (see below)</td>
+                                    <td>✅ Yes</td>
+                                    <td>✅ Yes</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <h4>Getting GitLab Token (CI_REGISTRY_PASSWORD)</h4>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Option A: Personal Access Token (Recommended)</strong>
+                            <ol>
+                                <li>Click your <strong>profile picture</strong> (top right) →
+                                    <strong>Preferences</strong></li>
+                                <li>In left sidebar, click <strong>Access Tokens</strong></li>
+                                <li>Create new token:
+                                    <ul>
+                                        <li>Token name: <code>CI/CD Deployment Token</code></li>
+                                        <li>Scopes: Check <code>read_registry</code> and <code>write_registry</code>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Click <strong>Create personal access token</strong></li>
+                                <li><strong>Copy the token immediately</strong> (shown only once!)</li>
+                            </ol>
+
+                            <strong>Option B: Deploy Token</strong>
+                            <ol>
+                                <li>Go to <strong>Project → Settings → Repository</strong></li>
+                                <li>Expand <strong>Deploy tokens</strong> section</li>
+                                <li>Create token with <code>read_registry</code> and <code>write_registry</code> scopes
+                                </li>
+                                <li>Copy both username and token</li>
+                            </ol>
+                        </div>
+
+                        <h3>Part 3: Set Up GitLab Runner</h3>
+
+                        <h4>Check if Shared Runners are Available</h4>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Navigate to: Project → Settings → CI/CD → Runners</strong>
+                            <ul>
+                                <li>Check if "Shared runners" are enabled and available</li>
+                                <li>If not available, you need to set up a project runner (see below)</li>
+                            </ul>
+                        </div>
+
+                        <h4>Setting Up Project Runner (If Needed)</h4>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>On your VPS, install GitLab Runner:</strong>
+                            <pre><code class="language-bash">curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
+apt-get install gitlab-runner -y</code></pre>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Get registration token from GitLab:</strong>
+                            <ol>
+                                <li>Go to <strong>Project → Settings → CI/CD → Runners</strong></li>
+                                <li>Click <strong>New project runner</strong></li>
+                                <li>Copy the <strong>registration token</strong> shown</li>
+                            </ol>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <strong>Register the runner on your VPS:</strong>
+                            <pre><code class="language-bash">gitlab-runner register</code></pre>
+                            <p>When prompted, enter:</p>
+                            <ul>
+                                <li><strong>GitLab URL:</strong> Your GitLab instance URL (e.g.,
+                                    <code>https://your-gitlab.com</code>)</li>
+                                <li><strong>Registration token:</strong> The token from step 3</li>
+                                <li><strong>Description:</strong> <code>vps-runner</code></li>
+                                <li><strong>Tags:</strong> <code>vps</code> (or leave empty)</li>
+                                <li><strong>Executor:</strong> <code>docker</code></li>
+                                <li><strong>Default Docker image:</strong> <code>docker:24</code></li>
+                            </ul>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-number">5</span>
+                            <strong>Configure runner for Docker-in-Docker:</strong>
+                            <pre><code class="language-bash">nano /etc/gitlab-runner/config.toml</code></pre>
+                            <p>Find the <code>[[runners]]</code> section and ensure:</p>
+                            <pre><code class="language-toml">[[runners]]
+  ...
+  executor = "docker"
+  [runners.docker]
+    privileged = true
+    image = "docker:24"</code></pre>
+                            <p>Then restart the runner:</p>
+                            <pre><code class="language-bash">gitlab-runner restart</code></pre>
+                        </div>
+
+                        <div class="checkpoint">
+                            GitLab Runner is installed and registered. Your pipeline should now be able to run jobs.
+                        </div>
+                    </section>
+
+                    <section id="app-config">
+                        <h2>⚙️ Application Configuration</h2>
+
+                        <h3>Step 1: Create Dockerfile</h3>
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Create <code>Dockerfile</code> in your project root:</strong>
+                            <pre><code class="language-dockerfile"># Multi-stage build for Node.js application
+
+# Stage 1: Build stage
+FROM node:18-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# Stage 2: Production stage
+FROM node:18-alpine
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Copy dependencies from builder
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+
+# Copy application code
+COPY --chown=nodejs:nodejs . .
+
+# Create necessary directories and log files
+RUN mkdir -p uploads allImages logs && \
+    touch access.log logs/access.log logs/error.log logs/combined.log && \
+    chown -R nodejs:nodejs uploads allImages logs access.log && \
+    chmod -R 755 uploads allImages logs access.log
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 9002
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:9002/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "index.js"]</code></pre>
+                        </div>
+
+                        <h3>Step 2: Create docker-compose.prod.yml</h3>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Create <code>docker-compose.prod.yml</code>:</strong>
+                            <pre><code class="language-yaml">services:
+  app:
+    image: sabeel-tv-be-node:latest
+    container_name: sabeel-tv-be-node
+    restart: unless-stopped
+    env_file:
+      - .env
+    network_mode: host
+    volumes:
+      - ./uploads:/app/uploads
+      - ./allImages:/app/allImages
+      - ./logs:/app/logs
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: sabeel-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5</code></pre>
+                        </div>
+
+                        <h3>Step 3: Create .gitlab-ci.yml</h3>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Create <code>.gitlab-ci.yml</code> in your project root:</strong>
+                            <pre><code class="language-yaml">stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_IMAGE_NAME: $CI_registry_IMAGE:$CI_COMMIT_REF_SLUG
+  TAG_LATEST: $CI_registry_IMAGE:latest
+
+services:
+  - docker:24-dind
+
+build:
+  stage: build
+  image: docker:24
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+  script:
+    - docker build -t "$DOCKER_IMAGE_NAME" .
+    - docker push "$DOCKER_IMAGE_NAME"
+    - |
+      if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+        docker tag "$DOCKER_IMAGE_NAME" "$TAG_LATEST"
+        docker push "$TAG_LATEST"
+      fi
+  only:
+    - main
+    - develop
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk update && apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan "$DEPLOY_SERVER_HOST" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $DEPLOY_USER@$DEPLOY_SERVER_HOST "
+        mkdir -p $DEPLOY_PATH
+        cd $DEPLOY_PATH
+        
+        # Login to registry
+        docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        
+        # Pull latest image
+        docker pull $TAG_LATEST
+        
+        # Stop and remove existing container
+        docker compose -f docker-compose.prod.yml down app || true
+        
+        # Start new container
+        docker compose -f docker-compose.prod.yml up -d app
+        
+        # Cleanup unused images
+        docker image prune -f
+      "
+  only:
+    - main</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="deployment">
+                        <h2>🚀 Deployment Process</h2>
+
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Commit and push your changes:</strong>
+                            <pre><code class="language-bash">git add .
+git commit -m "Add Docker and CI/CD configuration"
+git push origin main</code></pre>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>Monitor the pipeline:</strong>
+                            <p>Go to <strong>Project → Build → Pipelines</strong> in GitLab to see your pipeline
+                                running.</p>
+                            <ul>
+                                <li><strong>Build Stage:</strong> Builds the Docker image and pushes to Container
+                                    Registry</li>
+                                <li><strong>Deploy Stage:</strong> SSHs into your VPS, pulls the image, and restarts the
+                                    container</li>
+                            </ul>
+                        </div>
+
+                        <div class="success">
+                            Once the pipeline succeeds, your application should be live at
+                            <code>http://your-server-ip</code>!
+                        </div>
+                    </section>
+
+                    <section id="troubleshooting">
+                        <h2>🔍 Troubleshooting</h2>
+
+                        <h3>Common Issues</h3>
+                        <ul>
+                            <li><strong>SSH Connection Failed:</strong> Check if correct private key is added to GitLab
+                                variables and public key is in <code>authorized_keys</code> on VPS.</li>
+                            <li><strong>Docker Permission Denied:</strong> Ensure the user is added to
+                                <code>docker</code> group or use root.</li>
+                            <li><strong>Port Already in Use:</strong> Check if another service is using port 9002 or 80.
+                            </li>
+                            <li><strong>Pipeline Fails:</strong> Check the job logs in GitLab for error messages.</li>
+                        </ul>
+
+                        <div class="info">
+                            <strong>View Logs on VPS:</strong>
+                            <pre><code class="language-bash">docker logs -f sabeel-tv-be-node
+# or
+docker compose -f docker-compose.prod.yml logs -f app</code></pre>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="post-tags" data-aos="fade-up">
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">GitLab CI/CD</span>
+                    <span class="tag">Nginx</span>
+                    <span class="tag">VPS</span>
+                    <span class="tag">DevOps</span>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div class="rn-footer-area rn-section-gap section-separator">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-area text-center">
+                        <p class="description">© 2026 Utkarsh Shukla. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top -->
+    <div class="backto-top">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/vendor/jquery.js"></script>
+    <script src="../../assets/js/vendor/modernizer.min.js"></script>
+    <script src="../../assets/js/vendor/feather.min.js"></script>
+    <script src="../../assets/js/vendor/slick.min.js"></script>
+    <script src="../../assets/js/vendor/bootstrap.js"></script>
+    <script src="../../assets/js/vendor/text-type.js"></script>
+    <script src="../../assets/js/vendor/wow.js"></script>
+    <script src="../../assets/js/vendor/aos.js"></script>
+    <script src="../../assets/js/vendor/particles.js"></script>
+    <script src="../../assets/js/vendor/jquery-one-page-nav.js"></script>
+    <script src="../../assets/js/main.js"></script>
+
+    <script>
+        // Toast Notification System
+        function showToast(message, type = 'info', title = '') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            container.style.display = 'flex';
+            container.style.visibility = 'visible';
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.style.display = 'flex';
+            toast.style.visibility = 'visible';
+            const icons = { success: '✓', error: '✕', info: 'ℹ' };
+            toast.innerHTML = `
+                  <span class="toast-icon">${icons[type] || icons.info}</span>
+                  <div class="toast-content">
+                      ${title ? `<div class="toast-title">${title}</div>` : ''}
+                      <div class="toast-message">${message}</div>
+                  </div>
+                  <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+              `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => { if (toast.parentElement) toast.remove(); }, 300);
+            }, 5000);
+        }
+        window.showToast = showToast;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Trigger toast on load
+            setTimeout(() => {
+                showToast('Article loaded successfully!', 'success', 'Welcome');
+            }, 1000);
+        });
+
+        // Mobile Menu Fallback Fix
+        (function () {
+            const menuBtn = document.getElementById('menuBtn');
+            const menuBtnFallback = document.getElementById('menuBtnFallback');
+            const hambergerMenu = document.querySelector('.hamberger-menu');
+
+            if (hambergerMenu) {
+                hambergerMenu.style.display = 'block';
+                hambergerMenu.style.visibility = 'visible';
+                hambergerMenu.style.opacity = '1';
+            }
+
+            // Check if feather icon loaded, show fallback if not
+            setTimeout(function () {
+                if (menuBtn && (window.getComputedStyle(menuBtn).display === 'none' || !menuBtn.offsetWidth)) {
+                    if (menuBtnFallback) {
+                        menuBtnFallback.style.display = 'block';
+                        menuBtnFallback.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const mobileMenu = document.querySelector('.popup-mobile-menu');
+                            if (mobileMenu) {
+                                mobileMenu.classList.add('menu-open');
+                                document.body.style.overflow = 'hidden';
+                            }
+                        });
+                    }
+                }
+            }, 500);
+
+            // Mobile Menu Fix - Ensure it works even if jQuery isn't ready
+            const mobileMenu = document.querySelector('.popup-mobile-menu');
+            const closeBtn = document.querySelector('.close-menu-activation');
+            const closeTrigger = document.querySelector('.closeTrigger');
+
+            // Open menu
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (mobileMenu) {
+                        mobileMenu.classList.add('menu-open');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+
+            // Also add click handler to parent div
+            if (hambergerMenu) {
+                hambergerMenu.addEventListener('click', function (e) {
+                    if (e.target === hambergerMenu || e.target === menuBtn || e.target.closest('#menuBtn')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (mobileMenu) {
+                            mobileMenu.classList.add('menu-open');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
+                });
+            }
+
+            // Close menu handlers
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            if (closeTrigger) {
+                closeTrigger.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Close menu when clicking on menu links
+            const menuLinks = document.querySelectorAll('.popup-mobile-menu .primary-menu .nav-item a');
+            menuLinks.forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // Close menu when clicking outside
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', function (e) {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 500, once: true });
+
+        // ===========================================
+        // THEME TOGGLE SYSTEM
+        // ===========================================
+        (function () {
+            'use strict';
+
+            const THEME_KEY = 'portfolio-theme-preference';
+            const THEMES = ['light', 'dark', 'system'];
+
+            function getStoredTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function getSystemTheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function applyTheme(theme, isInitial = false) {
+                const body = document.body;
+
+                if (isInitial) body.classList.add('no-transition');
+
+                body.classList.remove('white-version', 'dark-version');
+                body.removeAttribute('data-theme');
+
+                let actualTheme = theme;
+                if (theme === 'system') {
+                    actualTheme = getSystemTheme();
+                    body.setAttribute('data-theme', 'system');
+                }
+
+                if (actualTheme === 'light') {
+                    body.classList.add('white-version');
+                } else {
+                    body.classList.add('dark-version');
+                }
+
+                localStorage.setItem(THEME_KEY, theme);
+
+                if (isInitial) {
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            body.classList.remove('no-transition');
+                        });
+                    });
+                }
+            }
+
+            function cycleTheme() {
+                const currentTheme = getStoredTheme();
+                const currentIndex = THEMES.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % THEMES.length;
+                applyTheme(THEMES[nextIndex]);
+            }
+
+            function initTheme() {
+                applyTheme(getStoredTheme(), true);
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                    if (getStoredTheme() === 'system') applyTheme('system');
+                });
+            }
+
+            function setupThemeToggle() {
+                const toggleBtn = document.getElementById('themeToggle');
+                let isThrottled = false;
+
+                function handleThemeToggle(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isThrottled) return;
+                    isThrottled = true;
+                    cycleTheme();
+                    setTimeout(() => { isThrottled = false; }, 300);
+                }
+
+                if (toggleBtn) toggleBtn.addEventListener('click', handleThemeToggle);
+            }
+
+            initTheme();
+            document.addEventListener('DOMContentLoaded', setupThemeToggle);
+        })();
+
+        // Prism highlighting
+        Prism.highlightAll();
+
+        // Back to top
+        document.addEventListener('DOMContentLoaded', function () {
+            const backToTop = document.querySelector('.backto-top');
+
+            window.addEventListener('scroll', function () {
+                backToTop.style.opacity = window.scrollY > 100 ? '1' : '0';
+            });
+
+            backToTop.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Sticky header
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header--sticky');
+            header.classList.toggle('sticky', window.scrollY > 250);
+        });
+    </script>
+</body>
+
+</html>
