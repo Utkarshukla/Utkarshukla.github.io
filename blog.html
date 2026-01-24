@@ -806,9 +806,178 @@
         </div>
     </div>
 
+    <div id="toast-container" class="toast-container"></div>
+
     <!-- Scripts -->
-    <script src="assets/js/vendor/jquery.min.js"></script>
+    <!-- Vendor Scripts -->
+    <script src="assets/js/vendor/jquery.js"></script>
+    <script src="assets/js/vendor/modernizer.min.js"></script>
+    <script src="assets/js/vendor/feather.min.js"></script>
+    <script src="assets/js/vendor/slick.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.js"></script>
+    <script src="assets/js/vendor/text-type.js"></script>
+    <script src="assets/js/vendor/wow.js"></script>
     <script src="assets/js/vendor/aos.js"></script>
+    <script src="assets/js/vendor/particles.js"></script>
+    <script src="assets/js/vendor/jquery-one-page-nav.js"></script>
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        // Toast Notification System
+        function showToast(message, type = 'info', title = '') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            // Ensure container is visible
+            container.style.display = 'flex';
+            container.style.visibility = 'visible';
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.style.display = 'flex';
+            toast.style.visibility = 'visible';
+
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ'
+            };
+
+            toast.innerHTML = `
+                  <span class="toast-icon">${icons[type] || icons.info}</span>
+                  <div class="toast-content">
+                      ${title ? `<div class="toast-title">${title}</div>` : ''}
+                      <div class="toast-message">${message}</div>
+                  </div>
+                  <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+              `;
+
+            container.appendChild(toast);
+
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+        window.showToast = showToast;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                showToast('Blog page loaded successfully!', 'success', 'Welcome');
+            }, 1000);
+        });
+    </script>
+
+    <script>
+        // Mobile Menu Fallback Fix
+        (function () {
+            const menuBtn = document.getElementById('menuBtn');
+            const menuBtnFallback = document.getElementById('menuBtnFallback');
+            const hambergerMenu = document.querySelector('.hamberger-menu');
+
+            if (hambergerMenu) {
+                hambergerMenu.style.display = 'block';
+                hambergerMenu.style.visibility = 'visible';
+                hambergerMenu.style.opacity = '1';
+            }
+
+            // Check if feather icon loaded, show fallback if not
+            setTimeout(function () {
+                if (menuBtn && (window.getComputedStyle(menuBtn).display === 'none' || !menuBtn.offsetWidth)) {
+                    if (menuBtnFallback) {
+                        menuBtnFallback.style.display = 'block';
+                        menuBtnFallback.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const mobileMenu = document.querySelector('.popup-mobile-menu');
+                            if (mobileMenu) {
+                                mobileMenu.classList.add('menu-open');
+                                document.body.style.overflow = 'hidden';
+                            }
+                        });
+                    }
+                }
+            }, 500);
+
+            // Mobile Menu Fix - Ensure it works even if jQuery isn't ready
+            const mobileMenu = document.querySelector('.popup-mobile-menu');
+            const closeBtn = document.querySelector('.close-menu-activation');
+            const closeTrigger = document.querySelector('.closeTrigger');
+
+            // Open menu
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (mobileMenu) {
+                        mobileMenu.classList.add('menu-open');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+
+            // Also add click handler to parent div
+            if (hambergerMenu) {
+                hambergerMenu.addEventListener('click', function (e) {
+                    if (e.target === hambergerMenu || e.target === menuBtn || e.target.closest('#menuBtn')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (mobileMenu) {
+                            mobileMenu.classList.add('menu-open');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
+                });
+            }
+
+            // Close menu handlers
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            if (closeTrigger) {
+                closeTrigger.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            // Close menu when clicking on menu links
+            const menuLinks = document.querySelectorAll('.popup-mobile-menu .primary-menu .nav-item a');
+            menuLinks.forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            // Close menu when clicking outside
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', function (e) {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        })();
+    </script>
 
 
     <script>
