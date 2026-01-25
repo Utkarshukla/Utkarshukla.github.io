@@ -25,6 +25,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://utkarshukla.github.io/blogs/spring-boot-vs-golang/</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://utkarshukla.github.io/blogs/gitlab-cicd-vps-setup/</loc>
     <lastmod>2026-01-25</lastmod>
     <changefreq>monthly</changefreq>

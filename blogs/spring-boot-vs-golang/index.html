@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Spring Boot vs Go (Golang): Choosing the Right Tool for BFF vs Core Backend Systems | Utkarsh Shukla</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://utkarshukla.github.io/assets/img/utslogo.jpg">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="description"
+        content="A deep dive into why Go (Golang) is the perfect choice for Backend-for-Frontend (BFF) layers while Spring Boot remains the king of core backend systems.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords"
+        content="Spring Boot, Go, Golang, BFF, Microservices, Backend Development, Java, Architecture, MERN Stack">
+    <meta name="author" content="Utkarsh Shukla">
+    <meta name="article:published_time" content="2025-10-30">
+    <meta name="article:author" content="Utkarsh Shukla">
+    <meta name="article:section" content="Backend Architecture">
+    <meta name="article:tag" content="Spring Boot, Go, Microservices, Architecture">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title"
+        content="Spring Boot vs Go (Golang): Choosing the Right Tool for BFF vs Core Backend Systems">
+    <meta property="og:description"
+        content="A deep dive into why Go (Golang) is the perfect choice for Backend-for-Frontend (BFF) layers while Spring Boot remains the king of core backend systems.">
+    <meta property="og:image" content="https://utkarshukla.github.io/assets/images/blog/spring-boot-vs-go.png">
+    <meta property="og:url" content="https://utkarshukla.github.io/blogs/spring-boot-vs-golang/">
+    <meta property="og:site_name" content="Utkarsh Shukla - Software Developer">
+    <meta property="article:published_time" content="2025-10-30T00:00:00+05:30">
+    <meta property="article:author" content="https://github.com/utkarshukla">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title"
+        content="Spring Boot vs Go (Golang): Choosing the Right Tool for BFF vs Core Backend Systems">
+    <meta name="twitter:description"
+        content="A deep dive into why Go (Golang) is the perfect choice for Backend-for-Frontend (BFF) layers while Spring Boot remains the king of core backend systems.">
+    <meta name="twitter:image" content="https://utkarshukla.github.io/assets/images/blog/spring-boot-vs-go.png">
+    <meta name="twitter:creator" content="@utkarshukla">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://utkarshukla.github.io/blogs/spring-boot-vs-golang/">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Spring Boot vs Go (Golang): Choosing the Right Tool for BFF vs Core Backend Systems",
+        "description": "A deep dive into why Go (Golang) is the perfect choice for Backend-for-Frontend (BFF) layers while Spring Boot remains the king of core backend systems.",
+        "image": "https://utkarshukla.github.io/assets/images/blog/spring-boot-vs-go.png",
+        "datePublished": "2025-10-30",
+        "dateModified": "2025-10-30",
+        "author": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "url": "https://utkarshukla.github.io"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://utkarshukla.github.io/assets/img/utslogo.jpg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://utkarshukla.github.io/blogs/spring-boot-vs-golang/"
+        },
+        "keywords": ["Spring Boot", "Go", "Golang", "BFF", "Microservices"]
+    }
+    </script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/vendor/aos.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <style>
+        /* ===========================================
+           BLOG POST PAGE STYLES (Inline to ensure consistency)
+        =========================================== */
+
+        :root {
+            --theme-transition: 0.3s ease;
+        }
+
+        body.dark-version {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .main-page-wrapper,
+        body.dark-version header.rn-header,
+        body.dark-version .rn-footer-area {
+            background-color: #212428 !important;
+        }
+
+        /* Blog Post Container */
+        .blog-post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 140px 20px 80px;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff014f;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 40px;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+            color: #ff014f;
+        }
+
+        .back-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+
+        /* Post Header */
+        .post-header {
+            margin-bottom: 40px;
+        }
+
+        .post-header .category {
+            display: inline-block;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .post-header .title {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            color: #1c1e22 !important;
+        }
+
+        body.white-version .post-header .title {
+            color: #1c1e22 !important;
+        }
+
+        .post-header .subtitle {
+            font-size: 20px;
+            color: #878e99;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .post-header .meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-header .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-header .author img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-header .author-info .name {
+            font-weight: 600;
+            color: #1e2125;
+        }
+
+        .post-header .author-info .date {
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        .post-header .read-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        /* Featured Image */
+        .featured-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Post Content */
+        .post-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #3c3e41;
+        }
+
+        .post-content p {
+            margin-bottom: 25px;
+        }
+
+        .post-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 50px 0 20px;
+            color: #1e2125;
+        }
+
+        .post-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 15px;
+            color: #1e2125;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 25px;
+            padding-left: 25px;
+        }
+
+        .post-content li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .post-content strong {
+            color: #1e2125;
+            font-weight: 600;
+        }
+
+        /* Tags */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-tags .tag {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .post-tags .tag:hover {
+            background: #ff014f;
+            color: #fff;
+        }
+
+        /* Dark Theme Styles */
+        body.dark-version .post-header .title {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-header .subtitle {
+            color: #878e99;
+        }
+
+        body.dark-version .post-header .meta {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .post-header .author-info .name {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content {
+            color: #b8bcc4;
+        }
+
+        body.dark-version .post-content h2,
+        body.dark-version .post-content h3 {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content strong {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-tags {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .featured-image {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Theme Toggle Styles */
+        .theme-toggle-wrapper {
+            position: relative;
+            z-index: 102 !important;
+        }
+
+        /* Navigation & Header Z-Index Fixes */
+        .mainmenu-nav {
+            position: relative;
+            z-index: 100;
+        }
+
+        .mainmenu-nav .nav-pills .nav-item .nav-link {
+            cursor: pointer !important;
+            position: relative;
+            z-index: 105;
+        }
+
+        .header-right {
+            position: relative;
+            z-index: 90;
+        }
+
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e2e8ec, #ffffff);
+            box-shadow: 5px 5px 15px #D1D9E6, -5px -5px 15px #ffffff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .theme-toggle-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover::before {
+            opacity: 1;
+        }
+
+        .theme-toggle-btn svg {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .theme-toggle-btn .sun-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .moon-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .system-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover svg {
+            color: #ffffff;
+        }
+
+        body.dark-version .theme-toggle-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b);
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+        }
+
+        body.dark-version .theme-toggle-btn .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+        }
+
+        body.dark-version .theme-toggle-btn .moon-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .sun-icon,
+        body[data-theme="system"] .theme-toggle-btn .moon-icon {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .system-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Header */
+        body.dark-version .rn-header {
+            background-color: transparent !important;
+        }
+
+        body.dark-version .rn-header.sticky {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .mainmenu-nav .primary-menu li a,
+        body.dark-version #sideNav .primary-menu li a {
+            color: #ffffff !important;
+        }
+
+        body.dark-version .rn-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b) !important;
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e !important;
+        }
+
+        body.dark-version .rn-btn span {
+            color: #ff014f !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .blog-post-container {
+                padding: 120px 15px 60px;
+            }
+
+            .post-header .title {
+                font-size: 28px;
+            }
+
+            .post-header .subtitle {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body class="template-color-1 spybody white-version">
+
+    <!-- Start Header -->
+    <header class="rn-header haeder-default black-logo-version header--fixed header--sticky">
+        <div class="header-wrapper rn-popup-mobile-menu m--0 row align-items-center">
+            <div class="col-lg-2 col-6">
+                <div class="header-left">
+                    <div class="logo">
+                        <a href="../../index.html" style="display: flex; align-items: center;">
+                            <img src="../../assets/img/utslogo.jpg" style="width: 60px; border-radius: 50%;"
+                                alt="Utkarsh Shukla">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-6">
+                <div class="header-center">
+                    <nav id="sideNav" class="mainmenu-nav navbar-example2 d-none d-xl-block">
+                        <ul class="primary-menu nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#clients">Clients</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#calendar">Github</a></li>
+                            <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="header-right"
+                        style="display: flex !important; align-items: center !important; gap: 15px !important;">
+                        <a class="rn-btn"
+                            href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing"><span>Resume</span></a>
+                        <!-- Theme Toggle Button -->
+                        <div class="theme-toggle-wrapper" id="themeToggle" title="Toggle theme">
+                            <button class="theme-toggle-btn" aria-label="Toggle theme">
+                                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="hamberger-menu d-block d-xl-none"
+                            style="display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; z-index: 1000 !important; margin-left: 15px !important; min-width: 28px !important; min-height: 28px !important;">
+                            <span id="menuBtn" class="humberger-menu"
+                                style="display: block !important; visibility: visible !important; color: #1b1b18 !important; cursor: pointer !important; width: 28px !important; height: 28px !important;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-menu">
+                                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="close-menu d-block">
+                            <span class="closeTrigger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- End Header Area -->
+
+    <!-- Start Popup Mobile Menu  -->
+    <div class="popup-mobile-menu">
+        <div class="inner">
+            <div class="menu-top">
+                <div class="menu-header">
+                    <a class="logo" href="../../index.html">
+                        <img src="../../assets/img/utslogo.jpg" style="width: 80px; border-radius: 50%;"
+                            alt="Utkarsh Shukla">
+                    </a>
+                    <div class="close-button">
+                        <button class="close-menu-activation close"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg></button>
+                    </div>
+                </div>
+                <p class="discription">Code with Utkarsh Shukla, Professional Web Developer.</p>
+            </div>
+            <div class="content">
+                <ul class="primary-menu nav nav-pills onepagenav">
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#clients">Clients</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#calendar">Github</a></li>
+                    <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                            href="https://drive.google.com/file/d/1gvZwyh9z0UfmtDXzbON58kmKFn8Udpmm/view?usp=sharing">Resume</a>
+                    </li>
+                </ul>
+                <div class="theme-toggle-mobile mt--30" style="display: flex; align-items: center; gap: 15px;">
+                    <span class="title" style="margin-bottom: 0;">Theme</span>
+                    <div class="theme-toggle-wrapper" id="themeToggleMobile" title="Toggle theme">
+                        <button class="theme-toggle-btn" aria-label="Toggle theme">
+                            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                            <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Popup Mobile Menu  -->
+
+    <main class="main-page-wrapper">
+        <div class="blog-post-container">
+            <!-- Back to Blog Link -->
+            <a href="../../blog.html" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-arrow-left">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Articles
+            </a>
+
+            <!-- Post Header -->
+            <div class="post-header" data-aos="fade-up" data-aos-duration="1000">
+                <span class="category">Backend Architecture</span>
+                <h1 class="title">Spring Boot vs Go (Golang): Choosing the Right Tool for BFF vs Core Backend Systems
+                </h1>
+                <p class="subtitle">A deep dive into why Go (Golang) is the perfect choice for Backend-for-Frontend
+                    (BFF) layers while Spring Boot remains the king of core backend systems.</p>
+
+                <div class="meta">
+                    <div class="author">
+                        <img src="../../assets/img/utslogo.jpg" alt="Utkarsh Shukla">
+                        <div class="author-info">
+                            <div class="name">Utkarsh Shukla</div>
+                            <div class="date">October 30, 2025</div>
+                        </div>
+                    </div>
+                    <div class="read-time">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-clock">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        8 min read
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Image -->
+            <img src="../../assets/images/blog/spring-boot-vs-go.png" alt="Spring Boot vs Go (Golang) Comparison"
+                class="featured-image" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+
+            <!-- Post Content -->
+            <article class="post-content" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+
+                <h2>Why Go (Golang) Is Perfect for BFF Layers</h2>
+                <h3>What BFFs Actually Do</h3>
+                <p>Backend-for-Frontend (BFF) patterns are essential in modern microservices architectures. They serve
+                    as the glue between the client and the complex backend services. Their primary responsibilities
+                    include:</p>
+                <ul>
+                    <li><strong>API aggregation</strong>: Combining results from multiple services into a single
+                        response.</li>
+                    <li><strong>Request transformation</strong>: Shaping data to match exactly what the UI needs.</li>
+                    <li><strong>Auth validation</strong>: Handling tokens and user session validation at the edge.</li>
+                    <li><strong>Rate limiting</strong>: Protecting downstream services from traffic spikes.</li>
+                    <li><strong>Simple orchestration</strong>: Managing the flow of requests between services.</li>
+                    <li><strong>Low-latency responses</strong>: Ensuring the UI feels snappy and responsive.</li>
+                </ul>
+
+                <h3>Why Go Fits Perfectly Here</h3>
+                <p>Go has carved out a niche for itself in the cloud-native ecosystem, and for good reason:</p>
+                <ul>
+                    <li>✅ <strong>Extremely low memory footprint</strong>: Run more instances with less infrastructure
+                        cost.</li>
+                    <li>✅ <strong>Fast startup time</strong>: Crucial for serverless environments and autoscaling.</li>
+                    <li>✅ <strong>Simple concurrency model (goroutines)</strong>: Handling thousands of concurrent
+                        connections effortlessly.</li>
+                    <li>✅ <strong>Minimal framework overhead</strong>: Use only what you need, keeping things
+                        lightweight.</li>
+                    <li>✅ <strong>Easy horizontal scaling</strong>: Binary deployment makes scaling simple.</li>
+                </ul>
+
+                <h3>Go BFF Example Use-Cases</h3>
+                <ul>
+                    <li>Mobile API Gateway</li>
+                    <li>Web BFF for React / Next.js</li>
+                    <li>Public API gateway</li>
+                    <li>Auth proxy</li>
+                    <li>Read-heavy aggregation services</li>
+                </ul>
+
+                <p class="info">💡 <strong>BFFs should be thin, fast, and boring.</strong> Go makes that easy.</p>
+
+                <h2>Where Go Starts to Hurt</h2>
+                <p>While Go is fantastic for systems programming and network services, it struggles when:</p>
+                <ul>
+                    <li>Business logic becomes complex</li>
+                    <li>Domain rules grow exponentially</li>
+                    <li>Multiple teams touch the same service</li>
+                    <li>You need strong abstractions and enterprise patterns</li>
+                </ul>
+
+                <p><strong>Common pain points in Go for specific use cases:</strong></p>
+                <ul>
+                    <li>Weak ORM ecosystem compared to Java/Hibernate</li>
+                    <li>Boilerplate-heavy validation logic</li>
+                    <li>Less expressive domain modeling capabilities</li>
+                    <li>Business logic tends to get scattered across files without strict enforcement</li>
+                </ul>
+                <p>Go is great for systems, but not always for complex enterprise business complexity.</p>
+
+                <h2>Why Spring Boot Shines for Core Backend Systems</h2>
+                <h3>What Core Systems Handle</h3>
+                <p>Core backend systems are the engines of your application. They handle critical operations that demand
+                    reliability and structure:</p>
+                <ul>
+                    <li>Orders, payments, inventory management</li>
+                    <li>Complex ACID transactions</li>
+                    <li>RBAC (Role-Based Access Control) & permissions</li>
+                    <li>Workflows and state machines</li>
+                    <li>Event-driven logic and messaging</li>
+                    <li>Strict data consistency</li>
+                </ul>
+
+                <h3>Why Spring Boot Works Here</h3>
+                <p>Spring Boot provides an opinionated yet flexible way to build enterprise-grade applications:</p>
+                <ul>
+                    <li>✅ <strong>Mature ecosystem</strong>: Decades of refinement in libraries.
+                        <ul>
+                            <li>Spring Data for powerful data access</li>
+                            <li>Spring Security for battle-tested auth</li>
+                            <li>Spring Transactions for declarative transaction management</li>
+                            <li>Spring Cloud for distributed system patterns</li>
+                        </ul>
+                    </li>
+                    <li>✅ <strong>Strong domain modeling</strong>: Excellent support for DDD (Domain-Driven Design).
+                    </li>
+                    <li>✅ <strong>Clean separation of concerns</strong>: Dependency Injection makes testing business
+                        logic easier.</li>
+                    <li>✅ <strong>Enterprise-grade tooling</strong>: Built-in observability, security, messaging, and
+                        async processing.</li>
+                </ul>
+
+                <p class="info">💡 <strong>Complex business logic needs structure — not just speed.</strong> Spring Boot
+                    provides that structure out of the box.</p>
+
+                <hr />
+                <p>In conclusion, the best architecture often leverages the strengths of both. Use Go for your
+                    high-performance, low-latency edge layers (BFFs, Gateways) and rely on Spring Boot for the robust,
+                    complex core domain logic.</p>
+
+                <!-- Tags -->
+                <div class="post-tags">
+                    <span class="tag">#SpringBoot</span>
+                    <span class="tag">#Golang</span>
+                    <span class="tag">#Microservices</span>
+                    <span class="tag">#BFF</span>
+                    <span class="tag">#SystemDesign</span>
+                </div>
+            </article>
+
+            <!-- Back to Blog Link (Bottom) -->
+            <div style="margin-top: 50px;">
+                <a href="../../blog.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-arrow-left">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back to Articles
+                </a>
+            </div>
+        </div>
+
+        <!-- Start Footer Area -->
+        <div class="rn-footer-area rn-section-gap section-separator">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer-area text-center">
+                            <div class="logo">
+                                <a href="../../index.html">
+                                    <img src="../../assets/img/utslogo.jpg" style="width: 80px; border-radius: 50%;"
+                                        alt="Utkarsh Shukla">
+                                </a>
+                            </div>
+                            <p class="description mt--30">© 2024. All rights reserved by <a target="_blank"
+                                    href="../../index.html">Utkarsh Shukla</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Footer Area -->
+    </main>
+
+    <!-- JS -->
+    <script src="../../assets/js/vendor/jquery.js"></script>
+    <script src="../../assets/js/vendor/modernizer.min.js"></script>
+    <script src="../../assets/js/vendor/feather.min.js"></script>
+    <script src="../../assets/js/vendor/slick.min.js"></script>
+    <script src="../../assets/js/vendor/bootstrap.js"></script>
+    <script src="../../assets/js/vendor/text-type.js"></script>
+    <script src="../../assets/js/vendor/wow.js"></script>
+    <script src="../../assets/js/vendor/aos.js"></script>
+    <script src="../../assets/js/vendor/particles.js"></script>
+    <script src="../../assets/js/main.js"></script>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeToggleMobileBtn = document.getElementById('themeToggleMobile');
+        const body = document.body;
+        const iconSun = document.querySelector('.sun-icon');
+        const iconMoon = document.querySelector('.moon-icon');
+
+        // Check for saved theme preference or use system preference
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-version');
+                body.classList.remove('white-version');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('white-version');
+                body.classList.remove('dark-version');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize Theme
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else if (systemPrefersDark) {
+            setTheme('dark');
+        }
+
+        // Toggle Theme Event
+        function toggleTheme() {
+            if (body.classList.contains('dark-version')) {
+                setTheme('light');
+            } else {
+                setTheme('dark');
+            }
+        }
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', toggleTheme);
+        }
+        if (themeToggleMobileBtn) {
+            themeToggleMobileBtn.addEventListener('click', toggleTheme);
+        }
+    </script>
+</body>
+
+</html>
