@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Nginx Reverse Proxy: Complete Domain Setup Guide for utkarsh.com | Utkarsh Shukla</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://utkarshukla.github.io/assets/img/utslogo.jpg">
+
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="description"
+        content="Learn how to configure Nginx as a reverse proxy for your domain. Complete step-by-step guide covering SSL/TLS setup, load balancing, caching, and production-ready configurations.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords"
+        content="Nginx Reverse Proxy, Domain Configuration, SSL Setup, Load Balancing, Web Server, DevOps, Backend Development, Server Configuration">
+    <meta name="author" content="Utkarsh Shukla">
+    <meta name="article:published_time" content="2026-01-31">
+    <meta name="article:author" content="Utkarsh Shukla">
+    <meta name="article:section" content="DevOps">
+    <meta name="article:tag" content="Nginx, Reverse Proxy, SSL, DevOps, Server Configuration">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Nginx Reverse Proxy: Complete Domain Setup Guide">
+    <meta property="og:description"
+        content="Learn how to configure Nginx as a reverse proxy for your domain. Complete step-by-step guide covering SSL/TLS setup, load balancing, caching, and production-ready configurations.">
+    <meta property="og:image" content="https://utkarshukla.github.io/assets/images/blog/nginx-reverse-proxy.png">
+    <meta property="og:url" content="https://utkarshukla.github.io/blogs/nginx-reverse-proxy-domain-setup/">
+    <meta property="og:site_name" content="Utkarsh Shukla - Software Developer">
+    <meta property="article:published_time" content="2026-01-31T00:00:00+05:30">
+    <meta property="article:author" content="https://github.com/utkarshukla">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nginx Reverse Proxy: Complete Domain Setup Guide">
+    <meta name="twitter:description"
+        content="Learn how to configure Nginx as a reverse proxy for your domain with SSL, load balancing, and caching.">
+    <meta name="twitter:image" content="https://utkarshukla.github.io/assets/images/blog/nginx-reverse-proxy.png">
+    <meta name="twitter:creator" content="@utkarshukla">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://utkarshukla.github.io/blogs/nginx-reverse-proxy-domain-setup/">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Nginx Reverse Proxy: Complete Domain Setup Guide for utkarsh.com",
+        "description": "Learn how to configure Nginx as a reverse proxy for your domain. Complete step-by-step guide covering SSL/TLS setup, load balancing, caching, and production-ready configurations.",
+        "image": "https://utkarshukla.github.io/assets/images/blog/nginx-reverse-proxy.png",
+        "datePublished": "2026-01-31",
+        "dateModified": "2026-01-31",
+        "author": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "url": "https://utkarshukla.github.io"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "Utkarsh Shukla",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://utkarshukla.github.io/assets/img/utslogo.jpg"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://utkarshukla.github.io/blogs/nginx-reverse-proxy-domain-setup/"
+        },
+        "keywords": ["Nginx", "Reverse Proxy", "SSL", "DevOps", "Server Configuration", "Load Balancing"]
+    }
+    </script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/vendor/aos.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+
+    <!-- Prism.js for Code Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+    <style>
+        :root {
+            --theme-transition: 0.3s ease;
+        }
+
+        body.dark-version {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .main-page-wrapper,
+        body.dark-version header.rn-header,
+        body.dark-version .rn-footer-area {
+            background-color: #212428 !important;
+        }
+
+        .blog-post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 140px 20px 80px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff014f;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 40px;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 0.8;
+            color: #ff014f;
+        }
+
+        .back-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-5px);
+        }
+
+        .post-header {
+            margin-bottom: 40px;
+        }
+
+        .post-header .category {
+            display: inline-block;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .post-header .title {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            color: #1c1e22 !important;
+        }
+
+        body.white-version .post-header .title {
+            color: #1c1e22 !important;
+        }
+
+        .post-header .subtitle {
+            font-size: 20px;
+            color: #878e99;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .post-header .meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-header .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-header .author img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-header .author-info .name {
+            font-weight: 600;
+            color: #1e2125;
+        }
+
+        .post-header .author-info .date {
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        .post-header .read-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #878e99;
+        }
+
+        .featured-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #3c3e41;
+        }
+
+        .post-content p {
+            margin-bottom: 25px;
+        }
+
+        .post-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 50px 0 20px;
+            color: #1e2125;
+        }
+
+        .post-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 15px;
+            color: #1e2125;
+        }
+
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 25px;
+            padding-left: 25px;
+        }
+
+        .post-content li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .post-content strong {
+            color: #1e2125;
+            font-weight: 600;
+        }
+
+        .post-content pre {
+            background: #2d2d2d;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-content pre code {
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .post-content code:not(pre code) {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .post-tags .tag {
+            background: rgba(255, 1, 79, 0.1);
+            color: #ff014f;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .post-tags .tag:hover {
+            background: #ff014f;
+            color: #fff;
+        }
+
+        body.dark-version .post-header .title {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-header .subtitle {
+            color: #878e99;
+        }
+
+        body.dark-version .post-header .meta {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .post-header .author-info .name {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content {
+            color: #b8bcc4;
+        }
+
+        body.dark-version .post-content h2,
+        body.dark-version .post-content h3 {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-content strong {
+            color: #ffffff;
+        }
+
+        body.dark-version .post-tags {
+            border-top-color: #3c3f43;
+        }
+
+        body.dark-version .featured-image {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle-wrapper {
+            position: relative;
+            z-index: 102 !important;
+        }
+
+        .mainmenu-nav {
+            position: relative;
+            z-index: 100;
+        }
+
+        .mainmenu-nav .nav-pills .nav-item .nav-link {
+            cursor: pointer !important;
+            position: relative;
+            z-index: 105;
+        }
+
+        .header-right {
+            position: relative;
+            z-index: 90;
+        }
+
+        .theme-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #e2e8ec, #ffffff);
+            box-shadow: 5px 5px 15px #D1D9E6, -5px -5px 15px #ffffff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .theme-toggle-btn::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #ff014f, #d11414);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover::before {
+            opacity: 1;
+        }
+
+        .theme-toggle-btn svg {
+            position: absolute;
+            z-index: 1;
+        }
+
+        .theme-toggle-btn .sun-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .moon-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(-90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn .system-icon {
+            color: #3c3e41;
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover svg {
+            color: #ffffff;
+        }
+
+        body.dark-version .theme-toggle-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b);
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e;
+        }
+
+        body.dark-version .theme-toggle-btn .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0);
+        }
+
+        body.dark-version .theme-toggle-btn .moon-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .sun-icon,
+        body[data-theme="system"] .theme-toggle-btn .moon-icon {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        body[data-theme="system"] .theme-toggle-btn .system-icon {
+            color: #ff014f;
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        body.dark-version .rn-header {
+            background-color: transparent !important;
+        }
+
+        body.dark-version .rn-header.sticky {
+            background-color: #212428 !important;
+        }
+
+        body.dark-version .mainmenu-nav .primary-menu li a,
+        body.dark-version #sideNav .primary-menu li a {
+            color: #ffffff !important;
+        }
+
+        body.dark-version .rn-btn {
+            background: linear-gradient(145deg, #1e2024, #23272b) !important;
+            box-shadow: 10px 10px 19px #1c1e22, -10px -10px 19px #262a2e !important;
+        }
+
+        body.dark-version .rn-btn span {
+            color: #ff014f !important;
+        }
+
+        .info-box {
+            background: linear-gradient(145deg, #e8f4fd, #d1e9f6);
+            border-left: 4px solid #2196F3;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .info-box.warning {
+            background: linear-gradient(145deg, #fff8e1, #ffecb3);
+            border-left-color: #ff9800;
+        }
+
+        .info-box.success {
+            background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+            border-left-color: #4caf50;
+        }
+
+        body.dark-version .info-box {
+            background: linear-gradient(145deg, #1e3a5f, #162d4a);
+        }
+
+        body.dark-version .info-box.warning {
+            background: linear-gradient(145deg, #3d3000, #2a2100);
+        }
+
+        body.dark-version .info-box.success {
+            background: linear-gradient(145deg, #1b3d1f, #122912);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-container {
+                padding: 120px 15px 60px;
+            }
+
+            .post-header .title {
+                font-size: 28px;
+            }
+
+            .post-header .subtitle {
+                font-size: 16px;
+            }
+
+            .post-content h2 {
+                font-size: 24px;
+            }
+
+            .post-content h3 {
+                font-size: 20px;
+            }
+
+            .post-content {
+                font-size: 16px;
+            }
+
+            .post-content pre {
+                padding: 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body class="template-color-1 spybody white-version">
+
+    <!-- Start Header -->
+    <header class="rn-header haeder-default black-logo-version header--fixed header--sticky">
+        <div class="header-wrapper rn-popup-mobile-menu m--0 row align-items-center">
+            <div class="col-lg-2 col-6">
+                <div class="header-left">
+                    <div class="logo">
+                        <a href="../../index.html" style="display: flex; align-items: center;">
+                            <img src="../../assets/img/utslogo.jpg" style="width: 60px; border-radius: 50%;"
+                                alt="Utkarsh Shukla">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-6">
+                <div class="header-center">
+                    <nav id="sideNav" class="mainmenu-nav navbar-example2 d-none d-xl-block">
+                        <ul class="primary-menu nav nav-pills">
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#clients">Clients</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#calendar">Github</a></li>
+                            <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="header-right"
+                        style="display: flex !important; align-items: center !important; gap: 15px !important;">
+                        <a class="rn-btn"
+                            href="https://drive.google.com/file/d/1lxxwWsW-tYfjUsznhFKG0f9DxbWbZ6j6/view?usp=sharing"><span>Resume</span></a>
+                        <div class="theme-toggle-wrapper" id="themeToggle" title="Toggle theme">
+                            <button class="theme-toggle-btn" aria-label="Toggle theme">
+                                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="5"></circle>
+                                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                </svg>
+                                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="hamberger-menu d-block d-xl-none"
+                            style="display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; z-index: 1000 !important; margin-left: 15px !important; min-width: 28px !important; min-height: 28px !important;">
+                            <span id="menuBtn" class="humberger-menu"
+                                style="display: block !important; visibility: visible !important; color: #1b1b18 !important; cursor: pointer !important; width: 28px !important; height: 28px !important;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-menu">
+                                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="close-menu d-block">
+                            <span class="closeTrigger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-x">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Start Popup Mobile Menu -->
+    <div class="popup-mobile-menu">
+        <div class="inner">
+            <div class="menu-top">
+                <div class="menu-header">
+                    <a class="logo" href="../../index.html">
+                        <img src="../../assets/img/utslogo.jpg" style="width: 80px; border-radius: 50%;"
+                            alt="Utkarsh Shukla">
+                    </a>
+                    <div class="close-button">
+                        <button class="close-menu-activation close"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg></button>
+                    </div>
+                </div>
+                <p class="discription">Code with Utkarsh Shukla, Professional Web Developer.</p>
+            </div>
+            <div class="content">
+                <ul class="primary-menu nav nav-pills onepagenav">
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#portfolio">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#clients">Clients</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#calendar">Github</a></li>
+                    <li class="nav-item current"><a class="nav-link" href="../../blog.html">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#contacts">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link"
+                            href="https://drive.google.com/file/d/1lxxwWsW-tYfjUsznhFKG0f9DxbWbZ6j6/view?usp=sharing">Resume</a>
+                    </li>
+                </ul>
+                <div class="theme-toggle-mobile mt--30" style="display: flex; align-items: center; gap: 15px;">
+                    <span class="title" style="margin-bottom: 0;">Theme</span>
+                    <div class="theme-toggle-wrapper" id="themeToggleMobile" title="Toggle theme">
+                        <button class="theme-toggle-btn" aria-label="Toggle theme">
+                            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
+                            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                            <svg class="system-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="social-share-style-1 mt--40">
+                    <span class="title">find with me</span>
+                    <ul class="social-share d-flex liststyle">
+                        <li class="facebook"><a
+                                href="https://drive.google.com/file/d/1lxxwWsW-tYfjUsznhFKG0f9DxbWbZ6j6/view?usp=sharing"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-file-text">
+                                    <path d="M4 1v22h16V7.5L14.5 1H4z" />
+                                    <polyline points="14 1 14 7 20 7" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <polyline points="10 9 9 9 8 9" />
+                                </svg></a></li>
+                        <li class="instagram"><a href="https://github.com/Utkarshukla"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-github">
+                                    <path
+                                        d="M0 0v24h24V0H0zm12 2C6.477 2 2 6.477 2 12c0 4.419 2.865 8.17 6.839 9.488.5.094.683-.217.683-.48 0-.237-.008-.866-.012-1.7-2.782.605-3.37-1.338-3.37-1.338-.454-1.15-1.107-1.457-1.107-1.457-.906-.617.068-.604.068-.604 1.004.07 1.53 1.03 1.53 1.03.892 1.526 2.34 1.086 2.91.83.092-.644.35-1.085.637-1.334-2.23-.254-4.572-1.115-4.572-4.95 0-1.093.39-1.987 1.032-2.684-.104-.253-.448-1.27.098-2.647 0 0 .84-.268 2.75 1.025a9.56 9.56 0 0 1 2.492-.336c.846.006 1.7.114 2.492.336 1.908-1.293 2.746-1.025 2.746-1.025.548 1.377.204 2.394.1 2.647.642.697 1.03 1.59 1.03 2.684 0 3.844-2.348 4.692-4.584 4.936.36.31.678.922.678 1.854 0 1.338-.012 2.416-.012 2.744 0 .267.18.578.688.48C19.138 20.17 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                                </svg></a></li>
+                        <li class="linkedin"><a href="https://www.linkedin.com/in/utkarsh-shukla-33a077218/"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-linkedin">
+                                    <path
+                                        d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z">
+                                    </path>
+                                    <rect x="2" y="9" width="4" height="12"></rect>
+                                    <circle cx="4" cy="4" r="2"></circle>
+                                </svg></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-page-wrapper">
+        <div class="blog-post-container">
+            <a href="../../blog.html" class="back-link" data-aos="fade-right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Blog
+            </a>
+
+            <article>
+                <header class="post-header" data-aos="fade-up">
+                    <span class="category">DevOps</span>
+                    <h1 class="title">Nginx Reverse Proxy: Complete Domain Setup Guide</h1>
+                    <p class="subtitle">Production-Ready Configuration for utkarsh.com with SSL, Load Balancing &
+                        Caching</p>
+                    <div class="meta">
+                        <div class="author">
+                            <img src="../../assets/img/utslogo.jpg" alt="Utkarsh Shukla">
+                            <div class="author-info">
+                                <div class="name">Utkarsh Shukla</div>
+                                <div class="date">January 31, 2026</div>
+                            </div>
+                        </div>
+                        <span class="read-time">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            15 min read
+                        </span>
+                    </div>
+                </header>
+
+                <img src="../../assets/images/blog/nginx-reverse-proxy.png" alt="Nginx Reverse Proxy Configuration"
+                    class="featured-image" data-aos="fade-up">
+
+                <div class="post-content" data-aos="fade-up">
+                    <p>Setting up a reverse proxy is one of the most essential skills for any backend developer or
+                        DevOps engineer. Whether you're deploying microservices, load balancing traffic, or securing
+                        your applications with SSL/TLS, <strong>Nginx</strong> remains the gold standard. In this
+                        comprehensive guide, I'll walk you through configuring Nginx as a reverse proxy for
+                        <code>utkarsh.com</code>—a real-world scenario that covers everything from basic setup to
+                        production-ready optimizations.</p>
+
+                    <h2>What is a Reverse Proxy?</h2>
+                    <p>A reverse proxy sits between client requests and your backend servers, acting as an intermediary
+                        that forwards requests to the appropriate destination. Unlike a forward proxy (which protects
+                        clients), a reverse proxy protects your servers and provides several critical benefits:</p>
+                    <ul>
+                        <li><strong>Load Balancing</strong>: Distribute traffic across multiple backend servers</li>
+                        <li><strong>SSL Termination</strong>: Handle HTTPS encryption at the proxy level</li>
+                        <li><strong>Caching</strong>: Store frequently accessed content to reduce backend load</li>
+                        <li><strong>Security</strong>: Hide backend server details and filter malicious requests</li>
+                        <li><strong>Compression</strong>: Reduce bandwidth by compressing responses</li>
+                    </ul>
+
+                    <h2>Prerequisites</h2>
+                    <p>Before we begin, ensure you have:</p>
+                    <ul>
+                        <li>A VPS or dedicated server with Ubuntu 22.04+ (or similar Linux distribution)</li>
+                        <li>Root or sudo access to the server</li>
+                        <li>Domain name (<code>utkarsh.com</code>) with DNS pointing to your server's IP</li>
+                        <li>Backend application running on a local port (e.g., Node.js on port 3000)</li>
+                    </ul>
+
+                    <h2>Step 1: Install Nginx</h2>
+                    <p>First, update your system packages and install Nginx:</p>
+                    <pre><code class="language-bash"># Update package lists
+sudo apt update
+
+# Install Nginx
+sudo apt install nginx -y
+
+# Start and enable Nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Verify installation
+nginx -v</code></pre>
+
+                    <div class="info-box">
+                        <strong>💡 Pro Tip:</strong> After installation, verify Nginx is running by visiting your
+                        server's IP address in a browser. You should see the default Nginx welcome page.
+                    </div>
+
+                    <h2>Step 2: Basic Reverse Proxy Configuration</h2>
+                    <p>Let's create a configuration file for <code>utkarsh.com</code>. Nginx stores site configurations
+                        in <code>/etc/nginx/sites-available/</code>:</p>
+                    <pre><code class="language-bash"># Create configuration file
+sudo nano /etc/nginx/sites-available/utkarsh.com</code></pre>
+
+                    <p>Add the following basic reverse proxy configuration:</p>
+                    <pre><code class="language-nginx">server {
+    listen 80;
+    listen [::]:80;
+    server_name utkarsh.com www.utkarsh.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}</code></pre>
+
+                    <h3>Understanding the Configuration</h3>
+                    <ul>
+                        <li><code>listen 80</code>: Accept HTTP connections on port 80</li>
+                        <li><code>server_name</code>: Match requests for utkarsh.com and www.utkarsh.com</li>
+                        <li><code>proxy_pass</code>: Forward requests to your backend application</li>
+                        <li><code>proxy_set_header</code>: Pass important client information to the backend</li>
+                        <li><code>X-Real-IP</code>: The actual client IP address</li>
+                        <li><code>X-Forwarded-For</code>: Chain of proxy IPs the request passed through</li>
+                        <li><code>X-Forwarded-Proto</code>: Original protocol (http/https)</li>
+                    </ul>
+
+                    <h2>Step 3: Enable the Site Configuration</h2>
+                    <p>Create a symbolic link to enable the site and test the configuration:</p>
+                    <pre><code class="language-bash"># Enable the site
+sudo ln -s /etc/nginx/sites-available/utkarsh.com /etc/nginx/sites-enabled/
+
+# Test Nginx configuration for syntax errors
+sudo nginx -t
+
+# If test passes, reload Nginx
+sudo systemctl reload nginx</code></pre>
+
+                    <h2>Step 4: SSL/TLS Setup with Let's Encrypt</h2>
+                    <p>Security is non-negotiable in production. Let's encrypt our traffic using free SSL certificates
+                        from Let's Encrypt:</p>
+                    <pre><code class="language-bash"># Install Certbot
+sudo apt install certbot python3-certbot-nginx -y
+
+# Obtain SSL certificate
+sudo certbot --nginx -d utkarsh.com -d www.utkarsh.com
+
+# Follow the prompts to complete setup</code></pre>
+
+                    <p>Certbot automatically updates your Nginx configuration. Here's what the SSL-enabled configuration
+                        looks like:</p>
+                    <pre><code class="language-nginx">server {
+    listen 80;
+    listen [::]:80;
+    server_name utkarsh.com www.utkarsh.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name utkarsh.com www.utkarsh.com;
+
+    # SSL Configuration
+    ssl_certificate /etc/letsencrypt/live/utkarsh.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/utkarsh.com/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
+
+    # Modern SSL Configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+    ssl_prefer_server_ciphers off;
+
+    # HSTS (ngx_http_headers_module is required)
+    add_header Strict-Transport-Security "max-age=63072000" always;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}</code></pre>
+
+                    <div class="info-box success">
+                        <strong>✅ Auto-Renewal:</strong> Certbot sets up automatic certificate renewal. Verify with:
+                        <code>sudo certbot renew --dry-run</code>
+                    </div>
+
+                    <h2>Step 5: Load Balancing Configuration</h2>
+                    <p>For high-traffic applications, distribute load across multiple backend servers:</p>
+                    <pre><code class="language-nginx"># Define upstream servers
+upstream utkarsh_backend {
+    least_conn;  # Load balancing method
+    server 127.0.0.1:3000 weight=3;
+    server 127.0.0.1:3001 weight=2;
+    server 127.0.0.1:3002 weight=1;
+    
+    # Health checks
+    keepalive 32;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name utkarsh.com www.utkarsh.com;
+
+    # SSL configuration...
+
+    location / {
+        proxy_pass http://utkarsh_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        # Other proxy headers...
+    }
+}</code></pre>
+
+                    <h3>Load Balancing Methods</h3>
+                    <ul>
+                        <li><code>round_robin</code> (default): Distributes requests evenly</li>
+                        <li><code>least_conn</code>: Routes to server with fewest active connections</li>
+                        <li><code>ip_hash</code>: Same client IP always goes to same backend (session persistence)</li>
+                        <li><code>weight</code>: Assign relative weights to servers based on capacity</li>
+                    </ul>
+
+                    <h2>Step 6: Enable Caching for Performance</h2>
+                    <p>Reduce backend load and improve response times with proxy caching:</p>
+                    <pre><code class="language-nginx"># Define cache zone (add to http block in nginx.conf)
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=utkarsh_cache:10m 
+                 max_size=1g inactive=60m use_temp_path=off;
+
+server {
+    # ... SSL and server configuration ...
+
+    location / {
+        proxy_pass http://localhost:3000;
+        
+        # Enable caching
+        proxy_cache utkarsh_cache;
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404 1m;
+        proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+        proxy_cache_background_update on;
+        proxy_cache_lock on;
+        
+        # Add cache status header for debugging
+        add_header X-Cache-Status $upstream_cache_status;
+        
+        # Other proxy headers...
+    }
+
+    # Bypass cache for dynamic content
+    location /api/ {
+        proxy_pass http://localhost:3000;
+        proxy_cache_bypass 1;
+        proxy_no_cache 1;
+        # Proxy headers...
+    }
+}</code></pre>
+
+                    <h2>Step 7: Security Hardening</h2>
+                    <p>Protect your reverse proxy with essential security headers and configurations:</p>
+                    <pre><code class="language-nginx">server {
+    # ... existing configuration ...
+
+    # Security Headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Content-Security-Policy "default-src 'self'" always;
+
+    # Hide Nginx version
+    server_tokens off;
+
+    # Rate Limiting
+    limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+    
+    location /api/ {
+        limit_req zone=api_limit burst=20 nodelay;
+        # Proxy configuration...
+    }
+
+    # Block common exploits
+    location ~* \.(git|env|htaccess|htpasswd)$ {
+        deny all;
+        return 404;
+    }
+}</code></pre>
+
+                    <h2>Step 8: Gzip Compression</h2>
+                    <p>Reduce bandwidth usage by compressing responses:</p>
+                    <pre><code class="language-nginx">http {
+    # Enable Gzip
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css text/xml application/json 
+               application/javascript application/rss+xml 
+               application/atom+xml image/svg+xml;
+    gzip_min_length 1000;
+}</code></pre>
+
+                    <h2>Complete Production Configuration</h2>
+                    <p>Here's the final, production-ready configuration combining all the optimizations:</p>
+                    <pre><code class="language-nginx"># /etc/nginx/sites-available/utkarsh.com
+
+upstream utkarsh_backend {
+    least_conn;
+    server 127.0.0.1:3000;
+    keepalive 32;
+}
+
+# Redirect HTTP to HTTPS
+server {
+    listen 80;
+    listen [::]:80;
+    server_name utkarsh.com www.utkarsh.com;
+    return 301 https://$server_name$request_uri;
+}
+
+# Main HTTPS server
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name utkarsh.com www.utkarsh.com;
+
+    # SSL Configuration
+    ssl_certificate /etc/letsencrypt/live/utkarsh.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/utkarsh.com/privkey.pem;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    # Security Headers
+    add_header Strict-Transport-Security "max-age=63072000" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    server_tokens off;
+
+    # Proxy timeouts
+    proxy_connect_timeout 60s;
+    proxy_send_timeout 60s;
+    proxy_read_timeout 60s;
+
+    # Main application
+    location / {
+        proxy_pass http://utkarsh_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Static files with long cache
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        proxy_pass http://utkarsh_backend;
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "OK";
+        add_header Content-Type text/plain;
+    }
+}</code></pre>
+
+                    <h2>Common Troubleshooting</h2>
+                    <h3>502 Bad Gateway</h3>
+                    <p>This error typically means Nginx can't connect to your backend:</p>
+                    <ul>
+                        <li>Verify your backend application is running: <code>curl http://localhost:3000</code></li>
+                        <li>Check if the port is correct in your <code>proxy_pass</code> directive</li>
+                        <li>Review Nginx error logs: <code>sudo tail -f /var/log/nginx/error.log</code></li>
+                    </ul>
+
+                    <h3>504 Gateway Timeout</h3>
+                    <p>Your backend is taking too long to respond:</p>
+                    <ul>
+                        <li>Increase timeout values in Nginx configuration</li>
+                        <li>Optimize your backend application's response time</li>
+                        <li>Consider adding caching for slow endpoints</li>
+                    </ul>
+
+                    <div class="info-box warning">
+                        <strong>⚠️ Important:</strong> Always test configuration changes with <code>sudo nginx -t</code>
+                        before reloading Nginx to avoid downtime.
+                    </div>
+
+                    <h2>Conclusion</h2>
+                    <p>Configuring Nginx as a reverse proxy is a fundamental skill that unlocks powerful capabilities
+                        for your web applications. We've covered everything from basic setup to production-grade
+                        configurations including SSL termination, load balancing, caching, and security hardening.</p>
+
+                    <p>Remember these key takeaways:</p>
+                    <ul>
+                        <li><strong>Always use HTTPS</strong> in production—Let's Encrypt makes it free and easy</li>
+                        <li><strong>Implement proper headers</strong> for security and client information forwarding
+                        </li>
+                        <li><strong>Enable caching</strong> for static content to reduce backend load</li>
+                        <li><strong>Monitor and log</strong> your reverse proxy for troubleshooting</li>
+                        <li><strong>Test configurations</strong> before applying them to avoid downtime</li>
+                    </ul>
+
+                    <p>With this knowledge, you're ready to deploy robust, scalable, and secure web applications behind
+                        Nginx. Happy deploying! 🚀</p>
+                </div>
+
+                <div class="post-tags">
+                    <span class="tag">Nginx</span>
+                    <span class="tag">Reverse Proxy</span>
+                    <span class="tag">SSL/TLS</span>
+                    <span class="tag">DevOps</span>
+                    <span class="tag">Load Balancing</span>
+                    <span class="tag">Server Configuration</span>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- Back to Top Button -->
+    <div class="backto-top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/vendor/jquery.min.js"></script>
+    <script src="../../assets/js/vendor/aos.js"></script>
+
+    <script>
+        (function () {
+            const mobileMenu = document.querySelector('.popup-mobile-menu');
+            const menuBtn = document.getElementById('menuBtn');
+            const closeButtons = document.querySelectorAll('.close-menu-activation, .closeTrigger');
+
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function () {
+                    if (mobileMenu) {
+                        mobileMenu.classList.add('menu-open');
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            }
+
+            closeButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    if (mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            });
+
+            if (mobileMenu) {
+                mobileMenu.addEventListener('click', function (e) {
+                    if (e.target === mobileMenu) {
+                        mobileMenu.classList.remove('menu-open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+        })();
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-nginx.min.js"></script>
+
+    <script>
+        AOS.init({ duration: 500, once: true });
+
+        (function () {
+            'use strict';
+            const THEME_KEY = 'portfolio-theme-preference';
+            const THEMES = ['light', 'dark', 'system'];
+
+            function getStoredTheme() { return localStorage.getItem(THEME_KEY) || 'light'; }
+            function getSystemTheme() { return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+
+            function applyTheme(theme, isInitial = false) {
+                const body = document.body;
+                if (isInitial) body.classList.add('no-transition');
+                body.classList.remove('white-version', 'dark-version');
+                body.removeAttribute('data-theme');
+                let actualTheme = theme;
+                if (theme === 'system') { actualTheme = getSystemTheme(); body.setAttribute('data-theme', 'system'); }
+                if (actualTheme === 'light') { body.classList.add('white-version'); } else { body.classList.add('dark-version'); }
+                localStorage.setItem(THEME_KEY, theme);
+                if (isInitial) { requestAnimationFrame(() => { requestAnimationFrame(() => { body.classList.remove('no-transition'); }); }); }
+            }
+
+            function cycleTheme() {
+                const currentTheme = getStoredTheme();
+                const currentIndex = THEMES.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % THEMES.length;
+                applyTheme(THEMES[nextIndex]);
+            }
+
+            function initTheme() {
+                applyTheme(getStoredTheme(), true);
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (getStoredTheme() === 'system') applyTheme('system'); });
+            }
+
+            function setupThemeToggle() {
+                const toggleBtn = document.getElementById('themeToggle');
+                let isThrottled = false;
+                function handleThemeToggle(e) { e.preventDefault(); e.stopPropagation(); if (isThrottled) return; isThrottled = true; cycleTheme(); setTimeout(() => { isThrottled = false; }, 300); }
+                if (toggleBtn) toggleBtn.addEventListener('click', handleThemeToggle);
+            }
+
+            initTheme();
+            document.addEventListener('DOMContentLoaded', setupThemeToggle);
+        })();
+
+        Prism.highlightAll();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const backToTop = document.querySelector('.backto-top');
+            window.addEventListener('scroll', function () { backToTop.style.opacity = window.scrollY > 100 ? '1' : '0'; });
+            backToTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+        });
+
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header--sticky');
+            header.classList.toggle('sticky', window.scrollY > 250);
+        });
+    </script>
+</body>
+
+</html>
